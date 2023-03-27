@@ -7,8 +7,6 @@ namespace kvaksy_backend.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-            Database.EnsureDeleted();
-            Database.EnsureCreated();
         }
 
         public DbSet<ReportSession> ReportSessions { get; set; }
