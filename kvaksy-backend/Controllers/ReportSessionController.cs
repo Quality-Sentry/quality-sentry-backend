@@ -5,28 +5,90 @@ using Microsoft.AspNetCore.Mvc;
 namespace kvaksy_backend.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("reportSession")]
     public class ReportSessionController : ControllerBase
     {
-        private readonly IReportSessionService _reportSessionRepository;
+        private readonly IReportSessionService _reportSessionService;
 
-        public ReportSessionController(IReportSessionService reportSessionRepository)
+        public ReportSessionController(IReportSessionService reportSessionService)
         {
-            _reportSessionRepository = reportSessionRepository;
+            _reportSessionService = reportSessionService;
         }
 
-        [Route("All")]
+        [Route("all")]
         [HttpGet]
         public ActionResult<List<ReportSession>> GetAll()
         {
             try
             {
-                var reportSessions = _reportSessionRepository.GetAll();
+                var reportSessions = _reportSessionService.GetAll();
                 return Ok(reportSessions);
             }
             catch (System.Exception)
             {
                 return StatusCode(404);
+            }
+        }
+
+        [Route("")]
+        [HttpPost]
+        public ActionResult<ReportSession> CreateReportSession([FromBody] ReportSession reportSession)
+        {
+            try
+            {
+                var createdReportSession = _reportSessionService.CreateReportSession(reportSession);
+                return Ok(createdReportSession);
+            }
+            catch (System.Exception)
+            {
+                return StatusCode(400);
+            }
+        }
+
+        [Route("unfinished")]
+        [HttpGet]
+        public ActionResult<List<ReportSession>> GetUnfinishedReportSessions()
+        {
+            try
+            {
+                var reports = _reportSessionService.GetUnfinishedReportSessions();
+                return Ok(reports);
+            }
+            catch (System.Exception)
+            {
+                return StatusCode(400);
+            }
+        }
+
+        [Route("finished")]
+        [HttpGet]
+        public ActionResult<List<ReportSession>> GetFinishedReportSessions()
+        {
+            try
+            {
+                var reports = _reportSessionService.GetFinishedReportSessions();
+                return Ok(reports);
+            }
+            catch (System.Exception)
+            {
+                return StatusCode(400);
+            }
+        }
+        [Route("finished")]
+        [HttpPost]
+        public ActionResult<List<ReportSession>> FinishReportSessions(Guid reportId)
+        {
+            try
+            {
+                var finished = _reportSessionService.FinishReportSession(reportId);
+                if (finished == null)
+                    return StatusCode(400);
+
+                return Ok(finished);
+            }
+            catch (System.Exception)
+            {
+                return StatusCode(400);
             }
         }
     }
