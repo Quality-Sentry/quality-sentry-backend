@@ -26,7 +26,7 @@ namespace kvaksy_backend.Controllers
             }
             catch (System.Exception)
             {
-                return StatusCode(400);
+                return StatusCode(404);
             }
         }
     }
