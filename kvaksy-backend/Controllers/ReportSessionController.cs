@@ -44,6 +44,19 @@ namespace kvaksy_backend.Controllers
                 return StatusCode(400);
             }
         }
+        [Route("image")]
+        [HttpPost]
+        public ActionResult UploadImage(IFormFile file, Guid id)
+        {
+            try
+            {
+                return Ok(_reportSessionService.UploadImage(id, file));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         [Route("unfinished")]
         [HttpGet]
@@ -54,9 +67,9 @@ namespace kvaksy_backend.Controllers
                 var reports = _reportSessionService.GetUnfinishedReportSessions();
                 return Ok(reports);
             }
-            catch (System.Exception)
+            catch (Exception e)
             {
-                return StatusCode(400);
+                return BadRequest(e.Message);
             }
         }
 
@@ -69,9 +82,9 @@ namespace kvaksy_backend.Controllers
                 var reports = _reportSessionService.GetFinishedReportSessions();
                 return Ok(reports);
             }
-            catch (System.Exception)
+            catch (Exception e)
             {
-                return StatusCode(400);
+                return BadRequest(e.Message);
             }
         }
         [Route("finished")]
@@ -86,9 +99,9 @@ namespace kvaksy_backend.Controllers
 
                 return Ok(finished);
             }
-            catch (System.Exception)
+            catch (Exception e)
             {
-                return StatusCode(400);
+                return BadRequest(e.Message);
             }
         }
     }

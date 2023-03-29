@@ -9,11 +9,14 @@
         public Guid ReportId { get; set; }
         public Report Report { get; set; }
 
+        public ICollection<ImageUrl> ImageUrls { get; set; }
+
         public ReportSession()
         {
             Id = Guid.NewGuid();
             Finished = false;
             CreatedAt = DateTime.Now;
+            ImageUrls = new List<ImageUrl>();
             Report = new Report();
         }
         public ReportSession(Guid id, bool finished, DateTime createdAt, Report report)
@@ -22,6 +25,7 @@
             Finished = finished;
             CreatedAt = createdAt;
             Report = report;
+            ImageUrls = new List<ImageUrl>();
         }
     }
 }
