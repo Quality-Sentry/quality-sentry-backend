@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/kvaksy-backend/bin/Debug/net6.0/kvaksy-backend.dll",
+            "program": "${workspaceFolder}/kvaksy-backend/bin/Debug/net7.0/kvaksy-backend.dll",
             "args": [],
             "cwd": "${workspaceFolder}/kvaksy-backend",
             "stopAtEntry": false,

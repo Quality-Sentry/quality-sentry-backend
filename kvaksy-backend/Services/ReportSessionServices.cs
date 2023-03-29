@@ -1,7 +1,7 @@
 using System.Text;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using kvaksy_backend.models;
+using kvaksy_backend.Data.Models;
 using kvaksy_backend.Repositories;
 
 namespace kvaksy_backend.Services

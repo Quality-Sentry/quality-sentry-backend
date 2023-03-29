@@ -1,4 +1,4 @@
-﻿namespace kvaksy_backend.models
+﻿namespace kvaksy_backend.Data.Models
 {
     public class ReportSession
     {

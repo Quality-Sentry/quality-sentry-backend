@@ -1,4 +1,4 @@
-using kvaksy_backend.models;
+using kvaksy_backend.Data.Models;
 using kvaksy_backend.Services;
 using Microsoft.AspNetCore.Mvc;
 

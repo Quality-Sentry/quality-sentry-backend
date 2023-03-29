@@ -1,7 +1,9 @@
+using kvaksy_backend.Data.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+
 namespace kvaksy_backend.Data
 {
-    using kvaksy_backend.models;
-    using Microsoft.EntityFrameworkCore;
 
     public class ApplicationDbContext : DbContext
     {
@@ -11,5 +13,7 @@ namespace kvaksy_backend.Data
 
         public DbSet<ReportSession> ReportSessions { get; set; }
         public DbSet<Report> Reports { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+
     }
 }

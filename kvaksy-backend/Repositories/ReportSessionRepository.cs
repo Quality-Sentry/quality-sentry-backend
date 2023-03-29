@@ -1,5 +1,5 @@
 using kvaksy_backend.Data;
-using kvaksy_backend.models;
+using kvaksy_backend.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace kvaksy_backend.Repositories
@@ -10,7 +10,6 @@ namespace kvaksy_backend.Repositories
         ReportSession? UpdateReportSession(ReportSession reportSession);
         ReportSession? GetReportSession(Guid id);
         bool CreateReportSession(ReportSession reportSession);
-
     }
     public class ReportSessionRepository : IReportSessionRepository
     {

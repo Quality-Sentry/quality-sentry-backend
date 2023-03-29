@@ -8,7 +8,7 @@ using kvaksy_backend.Data;
 
 #nullable disable
 
-namespace kvaksy_backend.Migrations
+namespace kvaksybackend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -22,7 +22,69 @@ namespace kvaksy_backend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("kvaksy_backend.models.ImageUrl", b =>
+            modelBuilder.Entity("kvaksy_backend.Data.Models.ApplicationUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ApplicationUsers");
+                });
+
+            modelBuilder.Entity("kvaksy_backend.Data.Models.ImageUrl", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -42,7 +104,7 @@ namespace kvaksy_backend.Migrations
                     b.ToTable("ImageUrl");
                 });
 
-            modelBuilder.Entity("kvaksy_backend.models.Report", b =>
+            modelBuilder.Entity("kvaksy_backend.Data.Models.Report", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -77,7 +139,7 @@ namespace kvaksy_backend.Migrations
                     b.ToTable("Reports");
                 });
 
-            modelBuilder.Entity("kvaksy_backend.models.ReportSession", b =>
+            modelBuilder.Entity("kvaksy_backend.Data.Models.ReportSession", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -99,16 +161,16 @@ namespace kvaksy_backend.Migrations
                     b.ToTable("ReportSessions");
                 });
 
-            modelBuilder.Entity("kvaksy_backend.models.ImageUrl", b =>
+            modelBuilder.Entity("kvaksy_backend.Data.Models.ImageUrl", b =>
                 {
-                    b.HasOne("kvaksy_backend.models.ReportSession", null)
+                    b.HasOne("kvaksy_backend.Data.Models.ReportSession", null)
                         .WithMany("ImageUrls")
                         .HasForeignKey("ReportSessionId");
                 });
 
-            modelBuilder.Entity("kvaksy_backend.models.ReportSession", b =>
+            modelBuilder.Entity("kvaksy_backend.Data.Models.ReportSession", b =>
                 {
-                    b.HasOne("kvaksy_backend.models.Report", "Report")
+                    b.HasOne("kvaksy_backend.Data.Models.Report", "Report")
                         .WithMany()
                         .HasForeignKey("ReportId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -117,7 +179,7 @@ namespace kvaksy_backend.Migrations
                     b.Navigation("Report");
                 });
 
-            modelBuilder.Entity("kvaksy_backend.models.ReportSession", b =>
+            modelBuilder.Entity("kvaksy_backend.Data.Models.ReportSession", b =>
                 {
                     b.Navigation("ImageUrls");
                 });

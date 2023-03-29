@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using System.Drawing;
 
-namespace kvaksy_backend.models
+namespace kvaksy_backend.Data.Models
 {
 
     public class Report
