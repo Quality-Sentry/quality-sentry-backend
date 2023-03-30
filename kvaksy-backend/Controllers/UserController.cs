@@ -1,5 +1,6 @@
 using kvaksy_backend.Data.Models;
 using kvaksy_backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace kvaksy_backend.Controllers
@@ -29,11 +30,11 @@ namespace kvaksy_backend.Controllers
         }
         [Route("register")]
         [HttpPost]
-        public ActionResult<LoginResponse> Register([FromBody] ApplicationUser user, string password)
+        public async Task<ActionResult<LoginResponse>> Register([FromBody] ApplicationUser user)
         {
             try
             {
-                return Ok(_userService.CreateAccount(user, password));
+                return Ok(await _userService.CreateAccount(user));
             }
             catch (Exception e)
             {

@@ -2,10 +2,14 @@ using kvaksy_backend.Data;
 using kvaksy_backend.Data.Models;
 using kvaksy_backend.Repositories;
 using kvaksy_backend.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
-
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +29,22 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 // builder.Services.AddIdentity<ApplicationUser, IdentityRole>();
 
 builder.Services.AddAuthorization();
-builder.Services.AddAuthentication("Bearer").AddJwtBearer();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = false,
+        ValidIssuer = builder.Environment.IsDevelopment() ? "*" : "https://kvaksy.azurewebsites.net",
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.ASCII.GetBytes(builder.Configuration.GetSection("Security").GetValue<string>("JwtSecret")))
+    };
+});
+
+
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -85,6 +104,7 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

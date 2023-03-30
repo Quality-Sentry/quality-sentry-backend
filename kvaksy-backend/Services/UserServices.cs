@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using kvaksy_backend.Data.Models;
 using Microsoft.AspNetCore.Identity;
 
@@ -6,7 +7,7 @@ namespace kvaksy_backend.Services
     public interface IUserServices
     {
         Task<LoginResponse> Login(ApplicationUser user, string password);
-        Task<ApplicationUser> CreateAccount(ApplicationUser user, string password);
+        Task<ApplicationUser> CreateAccount(ApplicationUser user);
     }
     public class UserServices : IUserServices
     {
@@ -39,19 +40,34 @@ namespace kvaksy_backend.Services
             }
         }
 
-        public async Task<ApplicationUser> CreateAccount(ApplicationUser user, string password)
+        public async Task<ApplicationUser> CreateAccount(ApplicationUser user)
         {
             try
             {
-                var result = await _userManager.CreateAsync(user, password);
+                user.NormalizedEmail = user.Email.ToLower();
+                user.NormalizedUserName = user.UserName.ToLower();
+
+
+                var result = await _userManager.CreateAsync(user, user.Password);
 
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, false);
+                    await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "User"));
+                    var signin = await _signInManager.CheckPasswordSignInAsync(user, user.Password, false);
+                    if (signin.Succeeded)
+                    {
+                    }
+                    return user;
                 }
-
-                return user;
-
+                else
+                {
+                    var fullMessage = "";
+                    for (int i = 0; i < result.Errors.Count(); i++)
+                    {
+                        fullMessage += (result.Errors.ElementAt(i).Description.ToString() + "\n");
+                    }
+                    throw new Exception(fullMessage.TrimEnd('\n'));
+                }
             }
             catch (Exception e)
             {
