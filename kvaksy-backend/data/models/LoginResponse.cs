@@ -1,3 +1,5 @@
+using System.IdentityModel.Tokens.Jwt;
+
 namespace kvaksy_backend.Data.Models
 {
     public class LoginResponse

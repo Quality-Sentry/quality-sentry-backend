@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace kvaksy_backend.Controllers
 {
-    [Authorize(Roles = "Admin, User")]
+    [Authorize(Policy = "IsUser")]
     [ApiController]
     [Route("reportSession")]
     public class ReportSessionController : ControllerBase

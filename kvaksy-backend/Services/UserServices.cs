@@ -1,40 +1,69 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using kvaksy_backend.Data.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace kvaksy_backend.Services
 {
     public interface IUserServices
     {
-        Task<LoginResponse> Login(ApplicationUser user, string password);
+        Task<LoginResponse?> Login(string email, string password);
         Task<ApplicationUser> CreateAccount(ApplicationUser user);
     }
     public class UserServices : IUserServices
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        public UserServices(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        private readonly IConfiguration _configuration;
+        public UserServices(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
         {
+            _configuration = configuration;
             _signInManager = signInManager;
             _userManager = userManager;
         }
 
-        public async Task<LoginResponse> Login(ApplicationUser user, string password)
+        public async Task<LoginResponse?> Login(string email, string password)
         {
-            // var result = await _signInManager.PasswordSignInAsync(user, password, false, false);
 
-            // if(result.Succeeded)
-            // {
-            //     var token = await GenerateJwtToken(user);
-            //     var refreshToken = await GenerateRefreshToken(user);
-            //     return new LoginResponse
-            //     {
-            //         Token = token,
-            //         RefreshToken = refreshToken,
-            //         Expires = DateTime.Now.AddMinutes(30)
-            //     };
-            // }
-            // else
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user != null)
+            {
+                var userClaims = await _userManager.GetClaimsAsync(user);
+
+                var jwtClaims = new List<Claim>
+                {
+                    userClaims.FirstOrDefault(x =>
+                        x.Type == ClaimTypes.Role &&
+                        x.Value == "User") ??
+                            new Claim(ClaimTypes.Role, "none"),
+                };
+
+                var key = new SymmetricSecurityKey(
+                    Encoding.ASCII.GetBytes(_configuration.GetSection("Security").GetValue<string>("JwtSecret")));
+
+                var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var token = new JwtSecurityToken(
+                    "https://kvaksy.azurewebsites.net",
+                    "AppUser",
+                    jwtClaims,
+                    expires: DateTime.UtcNow.AddMinutes(10),
+                    signingCredentials: signIn);
+
+                var writtenToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+                var response = new LoginResponse
+                {
+                    Token = writtenToken,
+                    Expires = token.ValidTo,
+                    RefreshToken = "Not Implemented Yet"
+                };
+
+                return response;
+            }
+            else
             {
                 return null;
             }
@@ -52,11 +81,12 @@ namespace kvaksy_backend.Services
 
                 if (result.Succeeded)
                 {
-                    await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "User"));
-                    var signin = await _signInManager.CheckPasswordSignInAsync(user, user.Password, false);
-                    if (signin.Succeeded)
+                    var login = await Login(user.Email, user.Password);
+                    if (login == null)
                     {
+                        throw new Exception("Account created but failed to login");
                     }
+
                     return user;
                 }
                 else

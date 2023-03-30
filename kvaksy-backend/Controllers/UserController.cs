@@ -17,11 +17,15 @@ namespace kvaksy_backend.Controllers
 
         [Route("login")]
         [HttpPost]
-        public ActionResult<LoginResponse> Login([FromBody] ApplicationUser user)
+        public async Task<ActionResult<LoginResponse>> Login([FromBody] ApplicationUser user)
         {
+            if (user == null || user.Email == null || user.Password == null)
+            {
+                return BadRequest("Email and password are required.");
+            }
             try
             {
-                return Ok(new LoginResponse());
+                return Ok(await _userService.Login(user.Email, user.Password));
             }
             catch (Exception e)
             {
