@@ -1,5 +1,6 @@
 using kvaksy_backend.Data;
 using kvaksy_backend.Data.Models;
+using kvaksy_backend.Helpers;
 using kvaksy_backend.Repositories;
 using kvaksy_backend.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -54,7 +55,6 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 
 // builder.Services.AddIdentity<ApplicationUser, IdentityRole>();
 
-builder.Services.AddAuthorization();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -63,10 +63,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateIssuer = true,
-        ValidateAudience = false,
-        ValidIssuer = builder.Environment.IsDevelopment() ? "*" : "https://kvaksy.azurewebsites.net",
+        ValidateAudience = true,
+        ValidIssuer = "JWTAuthenticationServer",
+        ValidAudience = "JWTServicePostmanClient",
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.ASCII.GetBytes(builder.Configuration.GetSection("Security").GetValue<string>("JwtSecret")))
+            Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Security").GetValue<string>("JwtSecret")))
     };
 });
 
@@ -119,16 +120,17 @@ builder.Services.AddAuthorization(options =>
                       policy.RequireClaim(ClaimTypes.Role, "User"));
 });
 
-
 builder.Services.AddScoped<IReportSessionRepository, ReportSessionRepository>();
 builder.Services.AddScoped<IReportSessionService, ReportSessionService>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ApplicationDbContext>();
 
-builder.Services.AddTransient<UserManager<ApplicationUser>>();
-builder.Services.AddTransient<SignInManager<ApplicationUser>>();
+builder.Services.AddScoped<UserManager<ApplicationUser>>();
+builder.Services.AddScoped<SignInManager<ApplicationUser>>();
 
 var app = builder.Build();
+
+app.UseMiddleware<JwtMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI();

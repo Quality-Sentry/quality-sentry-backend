@@ -42,7 +42,7 @@ namespace kvaksy_backend.Services
                 };
 
                 var key = new SymmetricSecurityKey(
-                    Encoding.ASCII.GetBytes(_configuration.GetSection("Security").GetValue<string>("JwtSecret")));
+                    Encoding.UTF8.GetBytes(_configuration.GetSection("Security").GetValue<string>("JwtSecret")));
 
                 var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
                 var token = new JwtSecurityToken(
