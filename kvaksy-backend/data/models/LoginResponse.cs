@@ -9,4 +9,10 @@ namespace kvaksy_backend.Data.Models
         public DateTime Expires { get; set; }
     }
 
+    public class CreateAccountResponse
+    {
+        public ApplicationUser CreatedUser { get; set; }
+        public LoginResponse LoginResponse { get; set; }
+    }
+
 }

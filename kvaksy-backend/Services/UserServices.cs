@@ -10,7 +10,7 @@ namespace kvaksy_backend.Services
     public interface IUserServices
     {
         Task<LoginResponse?> Login(string email, string password);
-        Task<ApplicationUser> CreateAccount(ApplicationUser user);
+        Task<CreateAccountResponse> CreateAccount(ApplicationUser user);
     }
     public class UserServices : IUserServices
     {
@@ -69,7 +69,7 @@ namespace kvaksy_backend.Services
             }
         }
 
-        public async Task<ApplicationUser> CreateAccount(ApplicationUser user)
+        public async Task<CreateAccountResponse> CreateAccount(ApplicationUser user)
         {
             try
             {
@@ -87,7 +87,11 @@ namespace kvaksy_backend.Services
                         throw new Exception("Account created but failed to login");
                     }
 
-                    return user;
+                    return new CreateAccountResponse
+                    {
+                        CreatedUser = user,
+                        LoginResponse = login
+                    };
                 }
                 else
                 {
