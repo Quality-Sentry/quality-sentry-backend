@@ -81,6 +81,8 @@ namespace kvaksy_backend.Services
 
                 if (result.Succeeded)
                 {
+                    result = await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "User"));
+                    
                     var login = await Login(user.Email, user.Password);
                     if (login == null)
                     {

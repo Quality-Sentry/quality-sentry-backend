@@ -44,6 +44,7 @@ namespace kvaksy_backend.Helpers
                 var jwtToken = (JwtSecurityToken)validatedToken;
 
                 var identity = new ClaimsIdentity(jwtToken.Claims, "basic");
+
                 context.User = new ClaimsPrincipal(identity);
             }
             catch
