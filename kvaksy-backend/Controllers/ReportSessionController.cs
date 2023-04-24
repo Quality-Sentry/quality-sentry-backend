@@ -47,19 +47,6 @@ namespace kvaksy_backend.Controllers
                 return StatusCode(400);
             }
         }
-        [Route("image")]
-        [HttpPost]
-        public ActionResult UploadImage(IFormFile file, Guid id)
-        {
-            try
-            {
-                return Ok(_reportSessionService.UploadImage(id, file));
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
 
         [Route("unfinished")]
         [HttpGet]
@@ -107,5 +94,7 @@ namespace kvaksy_backend.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+
     }
 }
