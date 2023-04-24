@@ -25,7 +25,7 @@ namespace kvaksy_backend.Repositories
         }
         public ReportSession? GetReportSession(Guid id)
         {
-            return _dbContext.ReportSessions.Include(x => x.ImageUrls).FirstOrDefault(x => x.Id == id);
+            return _dbContext.ReportSessions.Include(x => x.ImageUrls).Include(x => x.Report).FirstOrDefault(x => x.Id == id);
 
         }
         public bool CreateReportSession(ReportSession reportSession)
