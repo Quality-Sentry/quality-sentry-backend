@@ -21,7 +21,7 @@ namespace kvaksy_backend.Repositories
         }
         public List<ReportSession> GetAll()
         {
-            return _dbContext.ReportSessions.Include(x => x.ImageUrls).ToList();
+            return _dbContext.ReportSessions.Include(x => x.ImageUrls).Include(x => x.Report).ToList();
         }
         public ReportSession? GetReportSession(Guid id)
         {
