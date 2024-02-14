@@ -11,7 +11,7 @@ namespace kvaksy_backend.Data.Models
 
     public class CreateAccountResponse
     {
-        public ApplicationUser CreatedUser { get; set; }
+        public User CreatedUser { get; set; }
         public LoginResponse LoginResponse { get; set; }
     }
 

@@ -2,7 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using kvaksy_backend.Data.Models;
-using Microsoft.AspNetCore.Identity;
+using kvaksy_backend.Repositories;
 using Microsoft.IdentityModel.Tokens;
 
 namespace kvaksy_backend.Services
@@ -10,36 +10,23 @@ namespace kvaksy_backend.Services
     public interface IUserServices
     {
         Task<LoginResponse?> Login(string email, string password);
-        Task<CreateAccountResponse> CreateAccount(ApplicationUser user);
+        Task<CreateAccountResponse> CreateAccount(User user);
     }
     public class UserServices : IUserServices
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _configuration;
-        public UserServices(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+        private readonly IUserRepository _userRepository;
+        public UserServices(IUserRepository userRepository, IConfiguration configuration)
         {
             _configuration = configuration;
-            _signInManager = signInManager;
-            _userManager = userManager;
+            _userRepository = userRepository;
         }
 
         public async Task<LoginResponse?> Login(string email, string password)
         {
-
-            var user = await _userManager.FindByEmailAsync(email);
-
-            if (user != null)
+            try
             {
-                var userClaims = await _userManager.GetClaimsAsync(user);
-
-                var jwtClaims = new List<Claim>
-                {
-                    userClaims.FirstOrDefault(x =>
-                        x.Type == ClaimTypes.Role &&
-                        x.Value == "User") ??
-                            new Claim(ClaimTypes.Role, "none"),
-                };
+                var user = await _userRepository.GetUser(email, password);
 
                 var key = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(_configuration.GetSection("Security").GetValue<string>("JwtSecret")));
@@ -47,46 +34,47 @@ namespace kvaksy_backend.Services
                 var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
                 var token = new JwtSecurityToken(
                     "https://kvaksy.azurewebsites.net",
-                    "AppUser",
-                    jwtClaims,
-                    expires: DateTime.UtcNow.AddMinutes(10),
+                    user.Role.ToString(),
+                    new List<Claim>(),
+                    expires: DateTime.UtcNow.AddMinutes(30),
                     signingCredentials: signIn);
 
                 var writtenToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-                var response = new LoginResponse
+                return new LoginResponse
                 {
                     Token = writtenToken,
                     Expires = token.ValidTo,
                     RefreshToken = "Not Implemented Yet"
                 };
-
-                return response;
             }
-            else
+            catch 
             {
-                return null;
+                throw;
             }
         }
 
-        public async Task<CreateAccountResponse> CreateAccount(ApplicationUser user)
+        public async Task<CreateAccountResponse> CreateAccount(User user)
         {
             try
             {
-                user.NormalizedEmail = user.Email.ToLower();
-                user.NormalizedUserName = user.UserName.ToLower();
-
-
-                var result = await _userManager.CreateAsync(user, user.Password);
-
-                if (result.Succeeded)
+                if(!(user.Email == null || user.Password == null || user.Username == null))
                 {
-                    result = await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "User"));
+                    user.Email = user.Email.ToLower();
+                    user.Username = user.Username.ToLower();
+                
+                    var createdUser = await _userRepository.Create(user);
+
+                    if (createdUser == null)
+                    {
+                        throw new Exception("Account creation failed");
+                    }
                     
                     var login = await Login(user.Email, user.Password);
+                        
                     if (login == null)
                     {
-                        throw new Exception("Account created but failed to login");
+                        throw new Exception("Account created, but login failed!");
                     }
 
                     return new CreateAccountResponse
@@ -95,20 +83,12 @@ namespace kvaksy_backend.Services
                         LoginResponse = login
                     };
                 }
-                else
-                {
-                    var fullMessage = "";
-                    for (int i = 0; i < result.Errors.Count(); i++)
-                    {
-                        fullMessage += (result.Errors.ElementAt(i).Description.ToString() + "\n");
-                    }
-                    throw new Exception(fullMessage.TrimEnd('\n'));
-                }
+                throw new Exception("Email, username and password are required.");
             }
-            catch (Exception e)
+            catch
             {
 
-                throw e;
+                throw;
             }
         }
 

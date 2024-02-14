@@ -17,7 +17,7 @@ namespace kvaksy_backend.Controllers
 
         [Route("login")]
         [HttpPost]
-        public async Task<ActionResult<LoginResponse>> Login([FromBody] ApplicationUser user)
+        public async Task<ActionResult<LoginResponse>> Login([FromBody] User user)
         {
             if (user == null || user.Email == null || user.Password == null)
             {
@@ -34,7 +34,7 @@ namespace kvaksy_backend.Controllers
         }
         [Route("register")]
         [HttpPost]
-        public async Task<ActionResult<LoginResponse>> Register([FromBody] ApplicationUser user)
+        public async Task<ActionResult<LoginResponse>> Register([FromBody] User user)
         {
             try
             {
