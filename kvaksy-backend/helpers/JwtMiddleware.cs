@@ -31,21 +31,49 @@ namespace kvaksy_backend.Helpers
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.UTF8.GetBytes(configuration.GetSection("Security").GetValue<string>("JwtSecret"));
+
+                var decoded = tokenHandler.ReadToken(token);
+
                 var validated = tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
 
-                Globals.IsUser = true;
+                var claims = validated.Claims.ToList();
+
+                // Get the role from the claims
+                claims.ForEach(claim =>
+                {
+                    if (claim.Type == "aud")
+                    {
+                        Globals.IsUser = false;
+                        Globals.IsAdmin = false;
+
+                        if (claim.Value.ToLower() == "admin")
+                        {
+                            Globals.IsAdmin = true;
+                            return;
+                        }
+
+                        if(claim.Value.ToLower() == "user")
+                        {
+                            Globals.IsUser = true;
+                            return;
+                        }
+
+                        // Add more roles here
+
+                    }
+                });
+
             }
             catch
             {
-                // do nothing if jwt validation fails
-                // default values are set to false
+                throw;
             }
         }
     }

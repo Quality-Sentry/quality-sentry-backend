@@ -25,7 +25,9 @@ namespace kvaksy_backend.Controllers
             }
             try
             {
-                return Ok(await _userService.Login(user.Email, user.Password));
+                var loggedInUser = await _userService.Login(user.Email, user.Password);
+                
+                return Ok(loggedInUser);
             }
             catch (Exception e)
             {
@@ -36,9 +38,15 @@ namespace kvaksy_backend.Controllers
         [HttpPost]
         public async Task<ActionResult<LoginResponse>> Register([FromBody] User user)
         {
+            if (!Globals.IsAdmin)
+            {
+                return Unauthorized("You are not authorized to create an account.");
+            }
             try
             {
-                return Ok(await _userService.CreateAccount(user));
+                var createdUser = await _userService.CreateAccount(user);
+
+                return Ok(createdUser);
             }
             catch (Exception e)
             {

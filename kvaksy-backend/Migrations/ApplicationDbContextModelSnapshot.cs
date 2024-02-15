@@ -8,7 +8,7 @@ using kvaksy_backend.Data;
 
 #nullable disable
 
-namespace kvaksybackend.Migrations
+namespace kvaksy_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -125,7 +125,7 @@ namespace kvaksybackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApplicationUsers");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("kvaksy_backend.Data.Models.ImageUrl", b =>

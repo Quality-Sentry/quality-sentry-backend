@@ -1,5 +1,7 @@
 ﻿using kvaksy_backend.Data;
 using kvaksy_backend.Data.Models;
+using kvaksy_backend.helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace kvaksy_backend.Repositories
 {
@@ -20,17 +22,65 @@ namespace kvaksy_backend.Repositories
 
         public Task<User> Create(User user)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var added = _dbContext.Add(user);
+
+                if(added.State == EntityState.Added)
+                {
+                    _dbContext.SaveChanges();
+                    return Task.FromResult(added.Entity);
+                }
+
+                throw new Exception("An error happened while creating the user in the database.");
+            }
+            catch
+            {
+                throw;
+            }
         }
 
-        public Task<User> GetUser(string email, string password)
+        public async Task<User> GetUser(string email, string password) 
         {
-            throw new NotImplementedException();
+            try
+            {
+                var dbUser = await _dbContext
+                    .Users
+                    .FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+
+                if (dbUser == null)
+                {
+                    _dbContext.SaveChanges();
+                    throw new Exception("Unable to find user with given email and password in database");
+                }
+
+                return dbUser;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public Task<User> GetUser(string username)
+        public async Task<User> GetUser(string username)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var dbUser = await _dbContext
+                    .Users
+                    .FirstOrDefaultAsync(u => u.Username == username);
+
+                if (dbUser == null)
+                {
+                    throw new Exception("Unable to find user with given username in database");
+                }
+
+                return dbUser;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
