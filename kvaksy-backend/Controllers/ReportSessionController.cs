@@ -22,6 +22,8 @@ namespace kvaksy_backend.Controllers
         [HttpGet]
         public ActionResult<List<ReportSession>> GetAll()
         {
+            Globals.CheckForUserLevelPermission();
+
             try
             {
                 var reportSessions = _reportSessionService.GetAll();
@@ -37,6 +39,8 @@ namespace kvaksy_backend.Controllers
         [HttpPost]
         public ActionResult<ReportSession> CreateReportSession([FromBody] ReportSession reportSession)
         {
+            Globals.CheckForUserLevelPermission();
+
             try
             {
                 var createdReportSession = _reportSessionService.CreateReportSession(reportSession);
@@ -52,6 +56,8 @@ namespace kvaksy_backend.Controllers
         [HttpPost]
         public ActionResult UploadImage(IFormFile file, Guid id)
         {
+            Globals.CheckForUserLevelPermission();
+
             try
             {
                 return Ok(_reportSessionService.UploadImage(id, file));
@@ -66,6 +72,8 @@ namespace kvaksy_backend.Controllers
         [HttpGet]
         public ActionResult<List<ReportSession>> GetUnfinishedReportSessions()
         {
+            Globals.CheckForUserLevelPermission();
+
             try
             {
                 var reports = _reportSessionService.GetUnfinishedReportSessions();
@@ -81,6 +89,8 @@ namespace kvaksy_backend.Controllers
         [HttpGet]
         public ActionResult<List<ReportSession>> GetFinishedReportSessions()
         {
+            Globals.CheckForUserLevelPermission();
+
             try
             {
                 var reports = _reportSessionService.GetFinishedReportSessions();
@@ -95,6 +105,8 @@ namespace kvaksy_backend.Controllers
         [HttpPost]
         public ActionResult<List<ReportSession>> FinishReportSessions(Guid reportId)
         {
+            Globals.CheckForUserLevelPermission();
+
             try
             {
                 var finished = _reportSessionService.FinishReportSession(reportId);
