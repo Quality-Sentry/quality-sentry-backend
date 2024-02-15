@@ -4,5 +4,21 @@
     {
         public static bool IsUser = false;
         public static bool IsAdmin = false;
+
+        public static void CheckForUserLevelPermission()
+        {
+            if (!IsUser)
+            {
+                throw new UnauthorizedAccessException("You are not authorized to perform this action.");
+            }
+        }
+
+        public static void CheckForAdminLevelPermission()
+        {
+            if (!IsAdmin)
+            {
+                throw new UnauthorizedAccessException("You are not authorized to perform this action.");
+            }
+        }
     }
 }

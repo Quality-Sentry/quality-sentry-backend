@@ -66,7 +66,6 @@ namespace kvaksy_backend.Helpers
                         }
 
                         // Add more roles here
-
                     }
                 });
 

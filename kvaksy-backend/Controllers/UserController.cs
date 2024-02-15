@@ -38,10 +38,8 @@ namespace kvaksy_backend.Controllers
         [HttpPost]
         public async Task<ActionResult<LoginResponse>> Register([FromBody] User user)
         {
-            if (!Globals.IsAdmin)
-            {
-                return Unauthorized("You are not authorized to create an account.");
-            }
+            Globals.CheckForAdminLevelPermission();
+
             try
             {
                 var createdUser = await _userService.CreateAccount(user);
