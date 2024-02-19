@@ -48,10 +48,10 @@ builder.Services.AddSwaggerGen(
 );
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+//builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 // builder.Services.AddIdentity<ApplicationUser, IdentityRole>();
 
@@ -71,62 +71,66 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    // Password settings.
-    if (builder.Environment.IsProduction())
-    {
-        options.Password.RequireDigit = true;
-        options.Password.RequireLowercase = true;
-        options.Password.RequireNonAlphanumeric = true;
-        options.Password.RequireUppercase = true;
-        options.Password.RequiredLength = 8;
-        options.Password.RequiredUniqueChars = 0;
+//builder.Services.Configure<IdentityOptions>(options =>
+//{
+//    // Password settings.
+//    if (builder.Environment.IsProduction())
+//    {
+//        options.Password.RequireDigit = true;
+//        options.Password.RequireLowercase = true;
+//        options.Password.RequireNonAlphanumeric = true;
+//        options.Password.RequireUppercase = true;
+//        options.Password.RequiredLength = 8;
+//        options.Password.RequiredUniqueChars = 0;
 
-        // Lockout settings.
-        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-        options.Lockout.MaxFailedAccessAttempts = 5;
-        options.Lockout.AllowedForNewUsers = true;
+//        // Lockout settings.
+//        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+//        options.Lockout.MaxFailedAccessAttempts = 5;
+//        options.Lockout.AllowedForNewUsers = true;
 
-        // User settings.
-        options.User.AllowedUserNameCharacters =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-        options.User.RequireUniqueEmail = true;
-    }
-    else
-    {
-        options.Password.RequireDigit = false;
-        options.Password.RequireLowercase = false;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequiredLength = 1;
-        options.Password.RequiredUniqueChars = 0;
+//        // User settings.
+//        options.User.AllowedUserNameCharacters =
+//        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+//        options.User.RequireUniqueEmail = true;
+//    }
+//    else
+//    {
+//        options.Password.RequireDigit = false;
+//        options.Password.RequireLowercase = false;
+//        options.Password.RequireNonAlphanumeric = false;
+//        options.Password.RequireUppercase = false;
+//        options.Password.RequiredLength = 1;
+//        options.Password.RequiredUniqueChars = 0;
 
-        // Lockout settings.
-        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(10);
-        options.Lockout.MaxFailedAccessAttempts = 20;
-        options.Lockout.AllowedForNewUsers = true;
+//        // Lockout settings.
+//        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(10);
+//        options.Lockout.MaxFailedAccessAttempts = 20;
+//        options.Lockout.AllowedForNewUsers = true;
 
-        // User settings.
-        options.User.AllowedUserNameCharacters =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-        options.User.RequireUniqueEmail = true;
-    }
-});
+//        // User settings.
+//        options.User.AllowedUserNameCharacters =
+//        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+//        options.User.RequireUniqueEmail = true;
+//    }
+//});
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("IsUser", policy =>
-                      policy.RequireClaim(ClaimTypes.Role, "User"));
-});
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("IsUser", policy =>
+//                      policy.RequireClaim(ClaimTypes.Role, "User"));
+//    options.AddPolicy("IsAdmin", policy =>
+//                      policy.RequireClaim(ClaimTypes.Role, "Admin"));
+//});
 
 builder.Services.AddScoped<IReportSessionRepository, ReportSessionRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 builder.Services.AddScoped<IReportSessionService, ReportSessionService>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ApplicationDbContext>();
 
-builder.Services.AddScoped<UserManager<ApplicationUser>>();
-builder.Services.AddScoped<SignInManager<ApplicationUser>>();
+//builder.Services.AddScoped<UserManager<User>>();
+//builder.Services.AddScoped<SignInManager<User>>();
 
 var app = builder.Build();
 
