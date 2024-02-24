@@ -17,6 +17,8 @@ namespace kvaksy_backend.Controllers
 
         [Route("login")]
         [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<ActionResult<LoginResponse>> LoginUser([FromBody] User user)
         {
             if (user == null || user.Email == null || user.Password == null)
@@ -36,6 +38,8 @@ namespace kvaksy_backend.Controllers
         }
         [Route("")]
         [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<ActionResult<LoginResponse>> CreateUser([FromBody] User user)
         {
             Globals.CheckForAdminLevelPermission();

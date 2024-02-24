@@ -20,6 +20,8 @@ namespace kvaksy_backend.Controllers
 
         [Route("")]
         [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         public ActionResult<List<ReportSession>> GetReportSessions()
         {
             Globals.CheckForUserLevelPermission();
@@ -31,12 +33,14 @@ namespace kvaksy_backend.Controllers
             }
             catch (System.Exception)
             {
-                return StatusCode(404);
+                return NotFound();
             }
         }
 
         [Route("")]
         [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public ActionResult<ReportSession> CreateReportSession([FromBody] ReportSession reportSession)
         {
             Globals.CheckForUserLevelPermission();
@@ -46,14 +50,16 @@ namespace kvaksy_backend.Controllers
                 var createdReportSession = _reportSessionService.CreateReportSession(reportSession);
                 return Ok(createdReportSession);
             }
-            catch (System.Exception)
+            catch (Exception e)
             {
-                return StatusCode(400);
+                return BadRequest(e.Message);
             }
         }
 
         [Route("image")]
         [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public ActionResult CreateImage(IFormFile file, Guid id)
         {
             Globals.CheckForUserLevelPermission();
@@ -70,6 +76,8 @@ namespace kvaksy_backend.Controllers
 
         [Route("unfinished")]
         [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public ActionResult<List<ReportSession>> GetUnfinishedReportSessions()
         {
             Globals.CheckForUserLevelPermission();
@@ -87,6 +95,8 @@ namespace kvaksy_backend.Controllers
 
         [Route("finished")]
         [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public ActionResult<List<ReportSession>> GetFinishedReportSessions()
         {
             Globals.CheckForUserLevelPermission();
@@ -103,6 +113,8 @@ namespace kvaksy_backend.Controllers
         }
         [Route("finished")]
         [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public ActionResult<List<ReportSession>> FinishReportSession(Guid reportId)
         {
             Globals.CheckForUserLevelPermission();
@@ -111,7 +123,7 @@ namespace kvaksy_backend.Controllers
             {
                 var finished = _reportSessionService.FinishReportSession(reportId);
                 if (finished == null)
-                    return StatusCode(400);
+                    return BadRequest("Report from body was not found");
 
                 return Ok(finished);
             }
