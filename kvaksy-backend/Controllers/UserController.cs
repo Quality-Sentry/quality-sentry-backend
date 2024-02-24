@@ -17,7 +17,7 @@ namespace kvaksy_backend.Controllers
 
         [Route("login")]
         [HttpPost]
-        public async Task<ActionResult<LoginResponse>> Login([FromBody] User user)
+        public async Task<ActionResult<LoginResponse>> LoginUser([FromBody] User user)
         {
             if (user == null || user.Email == null || user.Password == null)
             {
@@ -34,9 +34,9 @@ namespace kvaksy_backend.Controllers
                 return BadRequest(e.Message);
             }
         }
-        [Route("register")]
+        [Route("")]
         [HttpPost]
-        public async Task<ActionResult<LoginResponse>> Register([FromBody] User user)
+        public async Task<ActionResult<LoginResponse>> CreateUser([FromBody] User user)
         {
             Globals.CheckForAdminLevelPermission();
 
