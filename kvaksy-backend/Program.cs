@@ -15,22 +15,31 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
-    c =>
+    options =>
     {
-        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Version = "v1",
+            Title = "Quality Sentry API",
+            TermsOfService = new Uri("https://example.com/terms"),
+            License = new OpenApiLicense
+            {
+                Name = "License",
+                Url = new Uri("https://example.com/license")
+            }
+        });
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             In = ParameterLocation.Header,
             Description = "Please insert JWT with Bearer into field",
             Name = "Authorization",
             Type = SecuritySchemeType.ApiKey
         });
-        c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement {
    {
      new OpenApiSecurityScheme
      {
