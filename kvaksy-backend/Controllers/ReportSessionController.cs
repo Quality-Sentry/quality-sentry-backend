@@ -18,9 +18,9 @@ namespace kvaksy_backend.Controllers
             _reportSessionService = reportSessionService;
         }
 
-        [Route("all")]
+        [Route("")]
         [HttpGet]
-        public ActionResult<List<ReportSession>> GetAll()
+        public ActionResult<List<ReportSession>> GetReportSessions()
         {
             Globals.CheckForUserLevelPermission();
 
@@ -54,7 +54,7 @@ namespace kvaksy_backend.Controllers
 
         [Route("image")]
         [HttpPost]
-        public ActionResult UploadImage(IFormFile file, Guid id)
+        public ActionResult CreateImage(IFormFile file, Guid id)
         {
             Globals.CheckForUserLevelPermission();
 
@@ -103,7 +103,7 @@ namespace kvaksy_backend.Controllers
         }
         [Route("finished")]
         [HttpPost]
-        public ActionResult<List<ReportSession>> FinishReportSessions(Guid reportId)
+        public ActionResult<List<ReportSession>> FinishReportSession(Guid reportId)
         {
             Globals.CheckForUserLevelPermission();
 
