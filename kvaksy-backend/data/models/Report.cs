@@ -2,17 +2,15 @@
 
 namespace kvaksy_backend.Data.Models
 {
-    public class ReportSession
+
+    public class Report
     {
         public Guid Id { get; set; }
         public bool Finished { get; set; }
         public DateTime CreatedAt { get; set; }
-
-        public Guid ReportId { get; set; }
-
         public ICollection<ReportFieldBase> Fields { get; set; }
 
-        public ReportSession()
+        public Report()
         {
             Id = Guid.NewGuid();
             Finished = false;

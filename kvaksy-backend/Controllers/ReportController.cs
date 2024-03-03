@@ -8,12 +8,12 @@ namespace kvaksy_backend.Controllers
 {
     [Authorize(Policy = "IsUser")]
     [ApiController]
-    [Route("reportSession")]
-    public class ReportSessionController : ControllerBase
+    [Route("report")]
+    public class ReportController : ControllerBase
     {
         private readonly IReportSessionService _reportSessionService;
 
-        public ReportSessionController(IReportSessionService reportSessionService)
+        public ReportController(IReportSessionService reportSessionService)
         {
             _reportSessionService = reportSessionService;
         }
@@ -22,7 +22,7 @@ namespace kvaksy_backend.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<List<ReportSession>> GetReportSessions()
+        public ActionResult<List<Report>> GetReportSessions()
         {
             Globals.CheckForUserLevelPermission();
 
@@ -41,7 +41,7 @@ namespace kvaksy_backend.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<ReportSession> CreateReportSession([FromBody] ReportSession reportSession)
+        public ActionResult<Report> CreateReportSession([FromBody] Report reportSession)
         {
             Globals.CheckForUserLevelPermission();
 
@@ -55,7 +55,6 @@ namespace kvaksy_backend.Controllers
                 return BadRequest(e.Message);
             }
         }
-
         [Route("image")]
         [HttpPost]
         [ProducesResponseType(200)]
@@ -78,7 +77,7 @@ namespace kvaksy_backend.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<List<ReportSession>> GetUnfinishedReportSessions()
+        public ActionResult<List<Report>> GetUnfinishedReportSessions()
         {
             Globals.CheckForUserLevelPermission();
 
@@ -97,7 +96,7 @@ namespace kvaksy_backend.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<List<ReportSession>> GetFinishedReportSessions()
+        public ActionResult<List<Report>> GetFinishedReportSessions()
         {
             Globals.CheckForUserLevelPermission();
 
@@ -115,7 +114,7 @@ namespace kvaksy_backend.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<List<ReportSession>> FinishReportSession(Guid reportId)
+        public ActionResult<List<Report>> FinishReportSession(Guid reportId)
         {
             Globals.CheckForUserLevelPermission();
 

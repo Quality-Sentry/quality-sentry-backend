@@ -6,10 +6,10 @@ namespace kvaksy_backend.Repositories
 {
     public interface IReportSessionRepository
     {
-        List<ReportSession> GetAll();
-        ReportSession? UpdateReportSession(ReportSession reportSession);
-        ReportSession? GetReportSession(Guid id);
-        bool CreateReportSession(ReportSession reportSession);
+        List<Report> GetAll();
+        Report? UpdateReportSession(Report reportSession);
+        Report? GetReportSession(Guid id);
+        bool CreateReportSession(Report reportSession);
     }
     public class ReportSessionRepository : IReportSessionRepository
     {
@@ -19,16 +19,16 @@ namespace kvaksy_backend.Repositories
             _dbContext = dbContext;
             _dbContext.Database.EnsureCreated();
         }
-        public List<ReportSession> GetAll()
+        public List<Report> GetAll()
         {
             return _dbContext.ReportSessions.Include(x => x.ImageUrls).Include(x => x.Report).ToList();
         }
-        public ReportSession? GetReportSession(Guid id)
+        public Report? GetReportSession(Guid id)
         {
             return _dbContext.ReportSessions.Include(x => x.ImageUrls).Include(x => x.Report).FirstOrDefault(x => x.Id == id);
 
         }
-        public bool CreateReportSession(ReportSession reportSession)
+        public bool CreateReportSession(Report reportSession)
         {
             var result = _dbContext.ReportSessions.Add(reportSession);
             if (result.State == EntityState.Added)
@@ -40,7 +40,7 @@ namespace kvaksy_backend.Repositories
                 return false;
         }
 
-        public ReportSession? UpdateReportSession(ReportSession reportSession)
+        public Report? UpdateReportSession(Report reportSession)
         {
             var updated = _dbContext.ReportSessions.Update(reportSession);
 

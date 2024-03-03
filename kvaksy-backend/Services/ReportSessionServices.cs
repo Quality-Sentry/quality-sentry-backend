@@ -8,12 +8,12 @@ namespace kvaksy_backend.Services
 {
     public interface IReportSessionService
     {
-        List<ReportSession> GetAll();
-        ReportSession CreateReportSession(ReportSession reportSession);
-        List<ReportSession> GetUnfinishedReportSessions();
-        List<ReportSession> GetFinishedReportSessions();
-        ReportSession? FinishReportSession(Guid reportId);
-        ReportSession UploadImage(Guid id, IFormFile files);
+        List<Report> GetAll();
+        Report CreateReportSession(Report reportSession);
+        List<Report> GetUnfinishedReportSessions();
+        List<Report> GetFinishedReportSessions();
+        Report? FinishReportSession(Guid reportId);
+        Report UploadImage(Guid id, IFormFile files);
     }
     public class ReportSessionService : IReportSessionService
     {
@@ -24,11 +24,11 @@ namespace kvaksy_backend.Services
             _configuration = configuration;
             _reportSessionRepository = reportSessionRepository;
         }
-        public List<ReportSession> GetAll()
+        public List<Report> GetAll()
         {
             return _reportSessionRepository.GetAll();
         }
-        public ReportSession? CreateReportSession(ReportSession reportSession)
+        public Report? CreateReportSession(Report reportSession)
         {
             var result = _reportSessionRepository.CreateReportSession(reportSession);
             if (!result)
@@ -37,17 +37,17 @@ namespace kvaksy_backend.Services
                 return reportSession;
 
         }
-        public List<ReportSession> GetUnfinishedReportSessions()
+        public List<Report> GetUnfinishedReportSessions()
         {
             return _reportSessionRepository.GetAll().Where(x => x.Finished == false).ToList();
         }
 
-        public List<ReportSession> GetFinishedReportSessions()
+        public List<Report> GetFinishedReportSessions()
         {
             return _reportSessionRepository.GetAll().Where(x => x.Finished == true).ToList();
         }
 
-        public ReportSession FinishReportSession(Guid reportId)
+        public Report FinishReportSession(Guid reportId)
         {
             var reportSession = _reportSessionRepository.GetReportSession(reportId);
             if (reportSession == null)
@@ -60,7 +60,7 @@ namespace kvaksy_backend.Services
             return finished;
         }
 
-        public ReportSession UploadImage(Guid id, IFormFile files)
+        public Report UploadImage(Guid id, IFormFile files)
         {
             var connectionString = _configuration.GetSection("Blobs").GetValue<string>("ConnectionString");
 
