@@ -13,6 +13,20 @@ namespace kvaksy_backend.data.DbContexts
         {
             // Check if the database exists and create it if it doesn't
             Database.EnsureCreated();
+        
+            // Ensure that there exists a configuration for the report fields
+            if (ReportFieldsConfiguration.Count() == 0)
+            {
+                ReportFieldsConfiguration.Add(
+                    new ReportFieldsConfiguration
+                    {
+                        TemperatureField = true,
+                        WeightField = true,
+                        ImageField = true
+                    }
+                );
+                SaveChanges();
+            }
         }
     }
 }
