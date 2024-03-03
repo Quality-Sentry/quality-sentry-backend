@@ -13,9 +13,15 @@ namespace kvaksy_backend.data.models
     public abstract class ReportFieldBase
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } 
+        public string Name { get; set; }
+        public string Description { get; set; } 
 
-        public string Name { get; set; } = "N/A";
-        public string Description { get; set; } = "N/A";
+        protected ReportFieldBase()
+        {
+            Id = Guid.NewGuid();
+            Name = "N/A";
+            Description = "N/A";
+        }
     }
 }

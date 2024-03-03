@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace kvaksy_backend.Controllers
 {
-    [Authorize(Policy = "IsUser")]
     [ApiController]
     [Route("report")]
     public class ReportController : ControllerBase
@@ -22,7 +21,7 @@ namespace kvaksy_backend.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<List<Report>> GetReportSessions()
+        public ActionResult<List<Report>> GetReport()
         {
             Globals.CheckForUserLevelPermission();
 
@@ -41,13 +40,13 @@ namespace kvaksy_backend.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<Report> CreateReportSession([FromBody] Report reportSession)
+        public ActionResult<Report> CreateReport()
         {
             Globals.CheckForUserLevelPermission();
 
             try
             {
-                var createdReportSession = _reportSessionService.CreateReportSession(reportSession);
+                var createdReportSession = _reportSessionService.CreateReport();
                 return Ok(createdReportSession);
             }
             catch (Exception e)
@@ -77,7 +76,7 @@ namespace kvaksy_backend.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<List<Report>> GetUnfinishedReportSessions()
+        public ActionResult<List<Report>> GetUnfinishedReport()
         {
             Globals.CheckForUserLevelPermission();
 
@@ -96,7 +95,7 @@ namespace kvaksy_backend.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<List<Report>> GetFinishedReportSessions()
+        public ActionResult<List<Report>> GetFinishedReport()
         {
             Globals.CheckForUserLevelPermission();
 
@@ -114,7 +113,7 @@ namespace kvaksy_backend.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<List<Report>> FinishReportSession(Guid reportId)
+        public ActionResult<List<Report>> FinishReport(Guid reportId)
         {
             Globals.CheckForUserLevelPermission();
 

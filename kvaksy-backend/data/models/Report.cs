@@ -15,12 +15,24 @@ namespace kvaksy_backend.Data.Models
             Id = Guid.NewGuid();
             Finished = false;
             CreatedAt = DateTime.Now;
-            Fields = new List<ReportFieldBase>()
+            Fields = new List<ReportFieldBase>();
+        }
+
+        public Report FromConfigurations(ReportFieldsConfiguration configurations)
+        {
+            if (configurations.ImageField)
             {
-                new ImageField(),
-                new TemperatureField(),
-                new WeightField()
-            };
+                Fields.Add(new ImageField());
+            }
+            if (configurations.TemperatureField)
+            {
+                Fields.Add(new TemperatureField());
+            }
+            if (configurations.WeightField)
+            {
+                Fields.Add(new WeightField());
+            }
+            return this;
         }
     }
 }

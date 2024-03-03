@@ -1,20 +1,22 @@
 using kvaksy_backend.data.DbContexts;
+using kvaksy_backend.data.models;
 using kvaksy_backend.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace kvaksy_backend.Repositories
 {
-    public interface IReportSessionRepository
+    public interface IReportRepository
     {
         List<Report> GetAll();
-        Report? UpdateReportSession(Report reportSession);
-        Report? GetReportSession(Guid id);
-        bool CreateReportSession(Report reportSession);
+        Report? UpdateReport(Report reportSession);
+        Report? GetReport(Guid id);
+        bool CreateReport(Report report);
+        ReportFieldsConfiguration? GetReportFieldsConfiguration();
     }
-    public class ReportSessionRepository : IReportSessionRepository
+    public class ReportRepository : IReportRepository
     {
         private readonly ReportDbContext _dbContext;
-        public ReportSessionRepository(ReportDbContext dbContext)
+        public ReportRepository(ReportDbContext dbContext)
         {
             _dbContext = dbContext;
             _dbContext.Database.EnsureCreated();
@@ -25,14 +27,18 @@ namespace kvaksy_backend.Repositories
 
             return _dbContext.Reports.ToList();
         }
-        public Report? GetReportSession(Guid id)
+        public Report? GetReport(Guid id)
         {
             //return _dbContext.ReportSessions.Include(x => x.ImageUrls).Include(x => x.Report).FirstOrDefault(x => x.Id == id);
             return _dbContext.Reports.FirstOrDefault(x => x.Id == id);
         }
-        public bool CreateReportSession(Report reportSession)
+        public ReportFieldsConfiguration? GetReportFieldsConfiguration()
         {
-            var result = _dbContext.Reports.Add(reportSession);
+            return _dbContext.ReportFieldsConfiguration.FirstOrDefault();
+        }
+        public bool CreateReport(Report report)
+        {
+            var result = _dbContext.Reports.Add(report);
             if (result.State == EntityState.Added)
             {
                 _dbContext.SaveChanges();
@@ -42,7 +48,7 @@ namespace kvaksy_backend.Repositories
                 return false;
         }
 
-        public Report? UpdateReportSession(Report reportSession)
+        public Report? UpdateReport(Report reportSession)
         {
             var updated = _dbContext.Reports.Update(reportSession);
 

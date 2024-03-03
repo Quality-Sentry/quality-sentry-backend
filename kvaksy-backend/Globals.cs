@@ -7,6 +7,10 @@
 
         public static void CheckForUserLevelPermission()
         {
+            if (IsAdmin)
+            {
+                return;
+            }
             if (!IsUser)
             {
                 throw new UnauthorizedAccessException("You are not authorized to perform this action.");

@@ -9,7 +9,7 @@ namespace kvaksy_backend.Services
     public interface IReportSessionService
     {
         List<Report> GetAll();
-        Report CreateReportSession(Report reportSession);
+        Report CreateReport();
         List<Report> GetUnfinishedReportSessions();
         List<Report> GetFinishedReportSessions();
         Report? FinishReportSession(Guid reportId);
@@ -17,9 +17,9 @@ namespace kvaksy_backend.Services
     }
     public class ReportSessionService : IReportSessionService
     {
-        private readonly IReportSessionRepository _reportSessionRepository;
+        private readonly IReportRepository _reportSessionRepository;
         private readonly IConfiguration _configuration;
-        public ReportSessionService(IReportSessionRepository reportSessionRepository, IConfiguration configuration)
+        public ReportSessionService(IReportRepository reportSessionRepository, IConfiguration configuration)
         {
             _configuration = configuration;
             _reportSessionRepository = reportSessionRepository;
@@ -28,13 +28,25 @@ namespace kvaksy_backend.Services
         {
             return _reportSessionRepository.GetAll();
         }
-        public Report? CreateReportSession(Report reportSession)
+        public Report CreateReport()
         {
-            var result = _reportSessionRepository.CreateReportSession(reportSession);
-            if (!result)
-                return null;
+            var config = _reportSessionRepository.GetReportFieldsConfiguration();
+            if (config == null)
+            {
+                throw new Exception("Report fields configuration not found");
+            }
+
+            var report = new Report().FromConfigurations(config);
+
+            var result = _reportSessionRepository.CreateReport(report);
+            if (result)
+            {
+                return report;
+            }
             else
-                return reportSession;
+            {
+                throw new Exception("Failed to create report session");
+            }
 
         }
         public List<Report> GetUnfinishedReportSessions()
@@ -49,12 +61,12 @@ namespace kvaksy_backend.Services
 
         public Report FinishReportSession(Guid reportId)
         {
-            var reportSession = _reportSessionRepository.GetReportSession(reportId);
+            var reportSession = _reportSessionRepository.GetReport(reportId);
             if (reportSession == null)
                 throw new Exception("Report session not found");
 
             reportSession.Finished = true;
-            var finished = _reportSessionRepository.UpdateReportSession(reportSession);
+            var finished = _reportSessionRepository.UpdateReport(reportSession);
             if (finished == null)
                 throw new Exception("Failed to finish report session");
             return finished;
