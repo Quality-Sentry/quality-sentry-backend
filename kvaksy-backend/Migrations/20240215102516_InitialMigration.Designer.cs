@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using kvaksy_backend.Data;
+using kvaksy_backend.data.DbContexts;
 
 #nullable disable
 
 namespace kvaksy_backend.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(UserDbContext))]
     [Migration("20240215102516_InitialMigration")]
     partial class InitialMigration
     {

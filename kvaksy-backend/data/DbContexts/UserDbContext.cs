@@ -3,16 +3,14 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace kvaksy_backend.Data
+namespace kvaksy_backend.data.DbContexts
 {
 
-    public class ApplicationDbContext : DbContext
+    public class UserDbContext : DbContext
     {
-        public DbSet<Report> ReportSessions { get; set; } = null!;
-        public DbSet<Report> Reports { get; set; } = null!;
         public DbSet<User> Users { get; set; } = null!;
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration configuration) : base(options)
+        public UserDbContext(DbContextOptions<UserDbContext> options, IConfiguration configuration) : base(options)
         {
             // Check if the database exists and create it if it doesn't
             Database.EnsureCreated();
@@ -21,7 +19,8 @@ namespace kvaksy_backend.Data
             if (Users.Count() == 0)
             {
                 Users.Add(
-                    new User{
+                    new User
+                    {
                         Email = configuration.GetSection("Seeding").GetValue<string>("AdminEmail"),
                         Password = configuration.GetSection("Seeding").GetValue<string>("AdminPassword"),
                         Username = configuration.GetSection("Seeding").GetValue<string>("AdminUsername"),
@@ -32,15 +31,6 @@ namespace kvaksy_backend.Data
                 );
                 SaveChanges();
             };
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                // Replace "YourDatabaseName" with the desired database name
-                optionsBuilder.UseSqlServer("YourConnectionString;Database=YourDatabaseName");
-            }
         }
     }
 }

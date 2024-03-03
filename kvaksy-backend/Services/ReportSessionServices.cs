@@ -62,35 +62,37 @@ namespace kvaksy_backend.Services
 
         public Report UploadImage(Guid id, IFormFile files)
         {
-            var connectionString = _configuration.GetSection("Blobs").GetValue<string>("ConnectionString");
+            throw new NotImplementedException();
 
-            BlobContainerClient container = new BlobContainerClient(connectionString, id.ToString());
+            //var connectionString = _configuration.GetSection("Blobs").GetValue<string>("ConnectionString");
 
-            if (!container.Exists())
-                container.Create(PublicAccessType.Blob);
+            //BlobContainerClient container = new BlobContainerClient(connectionString, id.ToString());
 
-            BlobClient blob = container.GetBlobClient(files.FileName);
-            using (var stream = files.OpenReadStream())
-            {
-                blob.Upload(stream);
-                if (!blob.Exists())
-                    throw new Exception("Failed to upload image");
-            }
-            var session = _reportSessionRepository.GetReportSession(id);
-            if (session == null)
-                throw new Exception("Report session not found");
+            //if (!container.Exists())
+            //    container.Create(PublicAccessType.Blob);
 
-            session.ImageUrls.Add(
-                new ImageUrl
-                {
-                    Url = blob.Uri.ToString()
-                }
-            );
-            var updated = _reportSessionRepository.UpdateReportSession(session);
-            if (updated == null)
-                throw new Exception("Failed to update report session with image url");
+            //BlobClient blob = container.GetBlobClient(files.FileName);
+            //using (var stream = files.OpenReadStream())
+            //{
+            //    blob.Upload(stream);
+            //    if (!blob.Exists())
+            //        throw new Exception("Failed to upload image");
+            //}
+            //var session = _reportSessionRepository.GetReportSession(id);
+            //if (session == null)
+            //    throw new Exception("Report session not found");
 
-            return updated;
+            //session.ImageUrls.Add(
+            //    new ImageUrl
+            //    {
+            //        Url = blob.Uri.ToString()
+            //    }
+            //);
+            //var updated = _reportSessionRepository.UpdateReportSession(session);
+            //if (updated == null)
+            //    throw new Exception("Failed to update report session with image url");
+
+            //return updated;
         }
     }
 }

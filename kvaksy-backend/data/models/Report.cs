@@ -17,7 +17,7 @@ namespace kvaksy_backend.Data.Models
             CreatedAt = DateTime.Now;
             Fields = new List<ReportFieldBase>()
             {
-                new ImagesField(),
+                new ImageField(),
                 new TemperatureField(),
                 new WeightField()
             };
