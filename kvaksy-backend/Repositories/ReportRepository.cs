@@ -25,16 +25,20 @@ namespace kvaksy_backend.Repositories
         {
             //return _dbContext.Reports.Include(x => x.ImageUrls).Include(x => x.Report).ToList();
 
-            return _dbContext.Reports.ToList();
+            return _dbContext.Reports
+                .Include(report => report.Fields)
+                .ToList();
         }
         public Report? GetReport(Guid id)
         {
             //return _dbContext.ReportSessions.Include(x => x.ImageUrls).Include(x => x.Report).FirstOrDefault(x => x.Id == id);
-            return _dbContext.Reports.FirstOrDefault(x => x.Id == id);
+            return _dbContext.Reports
+                .FirstOrDefault(x => x.Id == id);
         }
         public ReportFieldsConfiguration? GetReportFieldsConfiguration()
         {
-            return _dbContext.ReportFieldsConfiguration.FirstOrDefault();
+            return _dbContext.ReportFieldsConfiguration
+                .FirstOrDefault();
         }
         public bool CreateReport(Report report)
         {
