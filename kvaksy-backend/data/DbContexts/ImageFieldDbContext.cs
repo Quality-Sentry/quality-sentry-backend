@@ -5,7 +5,7 @@ namespace kvaksy_backend.data.DbContexts
 {
     public class ImageFieldDbContext: DbContext
     {
-        public DbSet<ImageField> ImageFields { get; set; } = null!;
+        public DbSet<ImageField> ImageFields { get; set; }
 
         public ImageFieldDbContext(DbContextOptions<ImageFieldDbContext> options) : base(options)
         {

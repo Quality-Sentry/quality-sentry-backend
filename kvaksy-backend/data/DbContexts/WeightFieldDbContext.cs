@@ -5,7 +5,7 @@ namespace kvaksy_backend.data.DbContexts
 {
     public class WeightFieldDbContext: DbContext
     {
-        public DbSet<WeightField> WeightFields { get; set; } = null!;
+        public DbSet<WeightField> WeightFields { get; set; }
 
         public WeightFieldDbContext(DbContextOptions<WeightFieldDbContext> options) : base(options)
         {

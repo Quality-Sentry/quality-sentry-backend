@@ -8,7 +8,7 @@ namespace kvaksy_backend.data.DbContexts
 
     public class UserDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; } = null!;
+        public DbSet<User> Users { get; set; }
 
         public UserDbContext(DbContextOptions<UserDbContext> options, IConfiguration configuration) : base(options)
         {

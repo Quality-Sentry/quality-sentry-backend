@@ -5,7 +5,7 @@ namespace kvaksy_backend.data.DbContexts
 {
     public class TemperatureFieldDbContext: DbContext
     {
-        public DbSet<TemperatureField> TemperatureFields { get; set; } = null!;
+        public DbSet<TemperatureField> TemperatureFields { get; set; }
 
         public TemperatureFieldDbContext(DbContextOptions<TemperatureFieldDbContext> options) : base(options)
         {
