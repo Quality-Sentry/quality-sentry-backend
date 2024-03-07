@@ -31,8 +31,8 @@ namespace kvaksy_backend.Repositories
         }
         public Report? GetReport(Guid id)
         {
-            //return _dbContext.ReportSessions.Include(x => x.ImageUrls).Include(x => x.Report).FirstOrDefault(x => x.Id == id);
             return _dbContext.Reports
+                .Include(x => x.Fields)
                 .FirstOrDefault(x => x.Id == id);
         }
         public ReportFieldsConfiguration? GetReportFieldsConfiguration()
