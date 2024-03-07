@@ -1,19 +1,16 @@
 using kvaksy_backend.Data.Models;
 using kvaksy_backend.Services;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace kvaksy_backend.Controllers
 {
-    [Authorize(Policy = "IsUser")]
     [ApiController]
-    [Route("reportSession")]
-    public class ReportSessionController : ControllerBase
+    [Route("report")]
+    public class ReportController : ControllerBase
     {
         private readonly IReportSessionService _reportSessionService;
 
-        public ReportSessionController(IReportSessionService reportSessionService)
+        public ReportController(IReportSessionService reportSessionService)
         {
             _reportSessionService = reportSessionService;
         }
@@ -22,7 +19,7 @@ namespace kvaksy_backend.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public ActionResult<List<ReportSession>> GetReportSessions()
+        public ActionResult<List<Report>> GetReport()
         {
             Globals.CheckForUserLevelPermission();
 
@@ -31,7 +28,7 @@ namespace kvaksy_backend.Controllers
                 var reportSessions = _reportSessionService.GetAll();
                 return Ok(reportSessions);
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 return NotFound();
             }
@@ -41,21 +38,21 @@ namespace kvaksy_backend.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<ReportSession> CreateReportSession([FromBody] ReportSession reportSession)
+        public ActionResult<Report> CreateReport()
         {
             Globals.CheckForUserLevelPermission();
 
             try
             {
-                var createdReportSession = _reportSessionService.CreateReportSession(reportSession);
-                return Ok(createdReportSession);
+                var createdReportSession = _reportSessionService.CreateReport();
+
+                return Ok(createdReportSession.ToJson());
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
         }
-
         [Route("image")]
         [HttpPost]
         [ProducesResponseType(200)]
@@ -78,7 +75,7 @@ namespace kvaksy_backend.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<List<ReportSession>> GetUnfinishedReportSessions()
+        public ActionResult<List<Report>> GetUnfinishedReport()
         {
             Globals.CheckForUserLevelPermission();
 
@@ -97,7 +94,7 @@ namespace kvaksy_backend.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<List<ReportSession>> GetFinishedReportSessions()
+        public ActionResult<List<Report>> GetFinishedReport()
         {
             Globals.CheckForUserLevelPermission();
 
@@ -115,7 +112,7 @@ namespace kvaksy_backend.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult<List<ReportSession>> FinishReportSession(Guid reportId)
+        public ActionResult<List<Report>> FinishReport(Guid reportId)
         {
             Globals.CheckForUserLevelPermission();
 
