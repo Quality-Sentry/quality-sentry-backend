@@ -26,7 +26,7 @@ namespace kvaksy_backend.Controllers
 
             try
             {
-                var result = _services.updateTemperatureOnReport(id, temperature);
+                var result = await _services.updateTemperatureOnReport(id, temperature);
                 return Ok(result);
             }
             catch (Exception e)

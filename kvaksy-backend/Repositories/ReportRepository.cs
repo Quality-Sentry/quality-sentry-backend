@@ -23,8 +23,6 @@ namespace kvaksy_backend.Repositories
         }
         public List<Report> GetAll()
         {
-            //return _dbContext.Reports.Include(x => x.ImageUrls).Include(x => x.Report).ToList();
-
             return _dbContext.Reports
                 .Include(report => report.Fields)
                 .ToList();

@@ -26,7 +26,14 @@ namespace kvaksy_backend.Controllers
             try
             {
                 var reportSessions = _reportSessionService.GetAll();
-                return Ok(reportSessions);
+                var jsonString = "";
+
+                foreach ( var reportSession in reportSessions )
+                {
+                    jsonString += reportSession.ToJson();
+                }
+
+                return Ok(jsonString);
             }
             catch (Exception)
             {

@@ -7,7 +7,7 @@ namespace kvaksy_backend.Services
 {
     public interface ITemperatureServices
     {
-        bool updateTemperatureOnReport(Guid id, int temperature);
+        Task<TemperatureField> updateTemperatureOnReport(Guid id, int temperature);
     }
 
     public class TemperatureServices : ITemperatureServices
@@ -21,7 +21,7 @@ namespace kvaksy_backend.Services
             _reportRepository = reportRepository;
         }
 
-        public bool updateTemperatureOnReport(Guid id, int temperature)
+        public async Task<TemperatureField> updateTemperatureOnReport(Guid id, int temperature)
         {
             var report = _reportRepository.GetReport(id);
             if (report == null)
@@ -32,9 +32,13 @@ namespace kvaksy_backend.Services
             // get id for temperature field
             foreach (var field in report.Fields)
             {
-                if(field is TemperatureField)
+                if(field is TemperatureField temperatureField)
                 {
-                    return true;
+                    var updatedField = temperatureField;
+                    updatedField.Temperature = temperature;
+
+                    var updated = await _temperatureRepository.UpdateTemperature(updatedField);
+                    return updated;
                 }
             }
 
