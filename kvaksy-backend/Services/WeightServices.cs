@@ -5,23 +5,23 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace kvaksy_backend.Services
 {
-    public interface ITemperatureServices
+    public interface IWeightServices
     {
-        Task<TemperatureField> updateTemperatureOnReport(Guid id, double temperature);
+        Task<WeightField> updateWeightOnReport(Guid id, double weight);
     }
 
-    public class TemperatureServices : ITemperatureServices
+    public class WeightServices : IWeightServices
     {
-        private readonly ITemperatureRepository _temperatureRepository;
+        private readonly IWeightRepository _weightRepository;
         private readonly IReportRepository _reportRepository;
 
-        public TemperatureServices(ITemperatureRepository temperatureRepository, IReportRepository reportRepository)
-        { 
-            _temperatureRepository = temperatureRepository;
+        public WeightServices(IWeightRepository weightRepository, IReportRepository reportRepository)
+        {
             _reportRepository = reportRepository;
+            _weightRepository = weightRepository;
         }
 
-        public async Task<TemperatureField> updateTemperatureOnReport(Guid id, double temperature)
+        public async Task<WeightField> updateWeightOnReport(Guid id, double weight)
         {
             var report = _reportRepository.GetReport(id);
             if (report == null)
@@ -32,12 +32,12 @@ namespace kvaksy_backend.Services
             // get id for temperature field
             foreach (var field in report.Fields)
             {
-                if(field is TemperatureField temperatureField)
+                if(field is WeightField weightField)
                 {
-                    var updatedField = temperatureField;
-                    updatedField.Temperature = temperature;
+                    var updatedField = weightField;
+                    updatedField.Weight = weight;
 
-                    var updated = await _temperatureRepository.UpdateTemperature(updatedField);
+                    var updated = await _weightRepository.UpdateWeight(updatedField);
                     return updated;
                 }
             }
