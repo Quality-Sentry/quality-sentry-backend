@@ -90,10 +90,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITemperatureRepository, TemperatureRepository>();
+builder.Services.AddScoped<IWeightRepository, WeightRepository>();
 
 builder.Services.AddScoped<IReportSessionService, ReportSessionService>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ITemperatureServices, TemperatureServices>();
+builder.Services.AddScoped<IWeightServices, WeightServices>();
 
 var app = builder.Build();
 
