@@ -37,6 +37,7 @@ namespace kvaksy_backend.Controllers
                 return BadRequest(e.Message);
             }
         }
+
         [Route("")]
         [HttpPost]
         [ProducesResponseType(200)]

@@ -68,22 +68,9 @@ builder.Services.AddDbContext<UserDbContext>(options =>
 builder.Services.AddDbContext<ReportDbContext>(options => 
     options.UseSqlServer(dbConnectionString));
 
-builder.Services.AddDbContext<TemperatureFieldDbContext>(options =>
-    options.UseSqlServer(dbConnectionString));
-
-builder.Services.AddDbContext<WeightFieldDbContext>(options =>
-    options.UseSqlServer(dbConnectionString));
-
-builder.Services.AddDbContext<ImageFieldDbContext>(options =>
-    options.UseSqlServer(dbConnectionString));
-
 // Set up dependency injection for the repositories
 builder.Services.AddScoped<UserDbContext>();
 builder.Services.AddScoped<ReportDbContext>();
-builder.Services.AddScoped<TemperatureFieldDbContext>();
-builder.Services.AddScoped<WeightFieldDbContext>();
-builder.Services.AddScoped<ImageFieldDbContext>();
-
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -102,9 +89,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITemperatureRepository, TemperatureRepository>();
 
 builder.Services.AddScoped<IReportSessionService, ReportSessionService>();
 builder.Services.AddScoped<IUserServices, UserServices>();
+builder.Services.AddScoped<ITemperatureServices, TemperatureServices>();
 
 var app = builder.Build();
 
