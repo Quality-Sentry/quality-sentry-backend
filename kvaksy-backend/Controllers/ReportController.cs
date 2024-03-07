@@ -1,8 +1,10 @@
+using kvaksy_backend.data.models;
 using kvaksy_backend.Data.Models;
 using kvaksy_backend.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace kvaksy_backend.Controllers
 {
@@ -30,7 +32,7 @@ namespace kvaksy_backend.Controllers
                 var reportSessions = _reportSessionService.GetAll();
                 return Ok(reportSessions);
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 return NotFound();
             }
@@ -47,7 +49,8 @@ namespace kvaksy_backend.Controllers
             try
             {
                 var createdReportSession = _reportSessionService.CreateReport();
-                return Ok(createdReportSession);
+
+                return Ok(createdReportSession.ToJson());
             }
             catch (Exception e)
             {

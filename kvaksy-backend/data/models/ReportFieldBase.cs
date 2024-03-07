@@ -1,4 +1,7 @@
 ﻿using Microsoft.OpenApi.Any;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
 
 namespace kvaksy_backend.data.models
@@ -23,5 +26,6 @@ namespace kvaksy_backend.data.models
             Name = "N/A";
             Description = "N/A";
         }
+
     }
 }

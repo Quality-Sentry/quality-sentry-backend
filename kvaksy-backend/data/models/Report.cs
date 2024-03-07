@@ -1,4 +1,7 @@
 ﻿using kvaksy_backend.data.models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace kvaksy_backend.Data.Models
 {
@@ -16,6 +19,27 @@ namespace kvaksy_backend.Data.Models
             Finished = false;
             CreatedAt = DateTime.Now;
             Fields = new List<ReportFieldBase>();
+        }
+
+        public string ToJson()
+        {
+            var settings = new JsonSerializerSettings
+            {
+                Converters = new JsonConverter[] { new StringEnumConverter() },
+                Formatting = Formatting.Indented,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
+            // Create an anonymous object to merge properties from the Report class
+            var reportObject = new
+            {
+                Id,
+                Finished,
+                CreatedAt,
+                Fields
+            };
+
+            return JsonConvert.SerializeObject(reportObject, settings);
         }
 
         public Report FromConfigurations(ReportFieldsConfiguration configurations)

@@ -9,6 +9,8 @@ namespace kvaksy_backend.data.models
 
         public int? Amount { get; set; }
         public ICollection<ImageFieldUrl>? Urls { get; set; }
+
+
     }
 
     public class ImageFieldUrl
