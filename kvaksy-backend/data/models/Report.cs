@@ -2,12 +2,14 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace kvaksy_backend.Data.Models
 {
 
     public class Report
     {
+        [SwaggerSchema(ReadOnly = true)]
         public Guid Id { get; set; }
         public bool Finished { get; set; }
         public DateTime CreatedAt { get; set; }
