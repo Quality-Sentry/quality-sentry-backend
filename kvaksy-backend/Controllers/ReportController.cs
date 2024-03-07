@@ -1,10 +1,6 @@
-using kvaksy_backend.data.models;
 using kvaksy_backend.Data.Models;
 using kvaksy_backend.Services;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 
 namespace kvaksy_backend.Controllers
 {

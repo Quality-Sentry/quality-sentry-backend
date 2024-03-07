@@ -1,8 +1,4 @@
-﻿using Microsoft.OpenApi.Any;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace kvaksy_backend.data.models
 {

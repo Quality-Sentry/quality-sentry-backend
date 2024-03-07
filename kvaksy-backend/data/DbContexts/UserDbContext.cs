@@ -1,8 +1,5 @@
-using Humanizer.Configuration;
 using kvaksy_backend.Data.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace kvaksy_backend.data.DbContexts
 {
