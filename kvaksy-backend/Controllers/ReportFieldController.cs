@@ -6,17 +6,17 @@ using Microsoft.AspNetCore.Mvc;
 namespace kvaksy_backend.Controllers
 {
     [ApiController]
-    [Route("temperature")]
+    [Route("reportField")]
 
-    public class TemperatureController : ControllerBase
+    public class ReportFieldController : ControllerBase
     {
         private readonly ITemperatureServices _services;
-        public TemperatureController(ITemperatureServices services) 
+        public ReportFieldController(ITemperatureServices services) 
         { 
             _services = services;
         }
 
-        [Route("")]
+        [Route("temperature")]
         [HttpPatch]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
