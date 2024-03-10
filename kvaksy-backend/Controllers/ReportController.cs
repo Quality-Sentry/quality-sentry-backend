@@ -8,9 +8,9 @@ namespace kvaksy_backend.Controllers
     [Route("report")]
     public class ReportController : ControllerBase
     {
-        private readonly IReportSessionService _reportSessionService;
+        private readonly IReportSessionServices _reportSessionService;
 
-        public ReportController(IReportSessionService reportSessionService)
+        public ReportController(IReportSessionServices reportSessionService)
         {
             _reportSessionService = reportSessionService;
         }
@@ -64,13 +64,13 @@ namespace kvaksy_backend.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public ActionResult CreateImage(IFormFile file, Guid id)
+        public async Task<ActionResult> AddImageToReport(IFormFile file, Guid id)
         {
             Globals.CheckForUserLevelPermission();
 
             try
             {
-                return Ok(_reportSessionService.UploadImage(id, file));
+                return Ok(await _reportSessionService.AddImageToReport(id, file));
             }
             catch (Exception e)
             {

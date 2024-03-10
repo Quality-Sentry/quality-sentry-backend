@@ -8,8 +8,8 @@ namespace kvaksy_backend.Repositories
     public interface IReportRepository
     {
         List<Report> GetAll();
-        Report? UpdateReport(Report reportSession);
-        Report? GetReport(Guid id);
+        Task<Report> UpdateReport(Report reportSession);
+        Report GetReport(Guid id);
         bool CreateReport(Report report);
         ReportFieldsConfiguration? GetReportFieldsConfiguration();
     }
@@ -27,11 +27,18 @@ namespace kvaksy_backend.Repositories
                 .Include(report => report.Fields)
                 .ToList();
         }
-        public Report? GetReport(Guid id)
+        public Report GetReport(Guid id)
         {
-            return _dbContext.Reports
-                .Include(x => x.Fields)
-                .FirstOrDefault(x => x.Id == id);
+            try
+            {
+                return _dbContext.Reports
+                    .Include(x => x.Fields)
+                    .FirstOrDefault(x => x.Id == id)!;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
         public ReportFieldsConfiguration? GetReportFieldsConfiguration()
         {
@@ -50,17 +57,23 @@ namespace kvaksy_backend.Repositories
                 return false;
         }
 
-        public Report? UpdateReport(Report reportSession)
+        public async Task<Report> UpdateReport(Report reportSession)
         {
             var updated = _dbContext.Reports.Update(reportSession);
 
             if (updated.State == EntityState.Modified)
             {
-                _dbContext.SaveChanges();
+                var result = await _dbContext.SaveChangesAsync();
+
                 return reportSession;
             }
-            else
-                return null;
+
+            if(updated.State == EntityState.Unchanged)
+            {
+                throw new Exception("No error happened updating report, but no changes were made");
+            }
+
+            return reportSession;
         }
     }
 }

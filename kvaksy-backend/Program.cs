@@ -91,11 +91,15 @@ builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITemperatureRepository, TemperatureRepository>();
 builder.Services.AddScoped<IWeightRepository, WeightRepository>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
 
-builder.Services.AddScoped<IReportSessionService, ReportSessionService>();
+
+builder.Services.AddScoped<IReportSessionServices, ReportSessionServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ITemperatureServices, TemperatureServices>();
 builder.Services.AddScoped<IWeightServices, WeightServices>();
+builder.Services.AddScoped<IImageServices, ImageServices>();
+
 
 var app = builder.Build();
 

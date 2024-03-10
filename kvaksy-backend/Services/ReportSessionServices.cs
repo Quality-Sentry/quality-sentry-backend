@@ -6,23 +6,27 @@ using kvaksy_backend.Repositories;
 
 namespace kvaksy_backend.Services
 {
-    public interface IReportSessionService
+    public interface IReportSessionServices
     {
         List<Report> GetAll();
         Report CreateReport();
         List<Report> GetUnfinishedReportSessions();
         List<Report> GetFinishedReportSessions();
-        Report? FinishReportSession(Guid reportId);
-        Report UploadImage(Guid id, IFormFile files);
+        Task<Report> FinishReportSession(Guid reportId);
+        Task<Report> UpdateReport(Report report);
+        Report GetReport(Guid reportId);
+        Task<Report> AddImageToReport(Guid id, IFormFile file);
     }
-    public class ReportSessionService : IReportSessionService
+    public class ReportSessionServices : IReportSessionServices
     {
         private readonly IReportRepository _reportSessionRepository;
+        private readonly IImageServices _imageServices;
         private readonly IConfiguration _configuration;
-        public ReportSessionService(IReportRepository reportSessionRepository, IConfiguration configuration)
+        public ReportSessionServices(IReportRepository reportSessionRepository, IImageServices imageServices, IConfiguration configuration)
         {
             _configuration = configuration;
             _reportSessionRepository = reportSessionRepository;
+            _imageServices = imageServices;
         }
         public List<Report> GetAll()
         {
@@ -59,52 +63,46 @@ namespace kvaksy_backend.Services
             return _reportSessionRepository.GetAll().Where(x => x.Finished == true).ToList();
         }
 
-        public Report FinishReportSession(Guid reportId)
+        public async Task<Report> FinishReportSession(Guid reportId)
         {
             var reportSession = _reportSessionRepository.GetReport(reportId);
             if (reportSession == null)
                 throw new Exception("Report session not found");
 
             reportSession.Finished = true;
-            var finished = _reportSessionRepository.UpdateReport(reportSession);
+            var finished = await _reportSessionRepository.UpdateReport(reportSession);
+
             if (finished == null)
                 throw new Exception("Failed to finish report session");
+
             return finished;
         }
 
-        public Report UploadImage(Guid id, IFormFile files)
+        public Report GetReport(Guid reportId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var report = _reportSessionRepository.GetReport(reportId);
+                return report;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
-            //var connectionString = _configuration.GetSection("Blobs").GetValue<string>("ConnectionString");
+        public async Task<Report> UpdateReport(Report report)
+        {
+            var result = await _reportSessionRepository.UpdateReport(report);
 
-            //BlobContainerClient container = new BlobContainerClient(connectionString, id.ToString());
+            return result;
+        }
 
-            //if (!container.Exists())
-            //    container.Create(PublicAccessType.Blob);
+        public async Task<Report> AddImageToReport(Guid id, IFormFile file)
+        {
+            var result = await _imageServices.AddImageToReport(id, file);
 
-            //BlobClient blob = container.GetBlobClient(files.FileName);
-            //using (var stream = files.OpenReadStream())
-            //{
-            //    blob.Upload(stream);
-            //    if (!blob.Exists())
-            //        throw new Exception("Failed to upload image");
-            //}
-            //var session = _reportSessionRepository.GetReportSession(id);
-            //if (session == null)
-            //    throw new Exception("Report session not found");
-
-            //session.ImageUrls.Add(
-            //    new ImageUrl
-            //    {
-            //        Url = blob.Uri.ToString()
-            //    }
-            //);
-            //var updated = _reportSessionRepository.UpdateReportSession(session);
-            //if (updated == null)
-            //    throw new Exception("Failed to update report session with image url");
-
-            //return updated;
+            return result;
         }
     }
 }
