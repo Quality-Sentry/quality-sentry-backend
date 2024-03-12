@@ -8,9 +8,7 @@ namespace kvaksy_backend.data.models
         public new Guid Id { get; set; } = Guid.NewGuid();
 
         public int? Amount { get; set; }
-        public ICollection<ImageFieldUrl>? Urls { get; set; }
-
-
+        public ICollection<ImageFieldUrl> Urls { get; set; } = new List<ImageFieldUrl>();
     }
 
     public class ImageFieldUrl

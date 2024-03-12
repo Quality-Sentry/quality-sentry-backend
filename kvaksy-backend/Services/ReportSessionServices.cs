@@ -1,6 +1,3 @@
-using System.Text;
-using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
 using kvaksy_backend.Data.Models;
 using kvaksy_backend.Repositories;
 
@@ -15,18 +12,13 @@ namespace kvaksy_backend.Services
         Task<Report> FinishReportSession(Guid reportId);
         Task<Report> UpdateReport(Report report);
         Report GetReport(Guid reportId);
-        Task<Report> AddImageToReport(Guid id, IFormFile file);
     }
     public class ReportSessionServices : IReportSessionServices
     {
         private readonly IReportRepository _reportSessionRepository;
-        private readonly IImageServices _imageServices;
-        private readonly IConfiguration _configuration;
-        public ReportSessionServices(IReportRepository reportSessionRepository, IImageServices imageServices, IConfiguration configuration)
+        public ReportSessionServices(IReportRepository reportSessionRepository)
         {
-            _configuration = configuration;
             _reportSessionRepository = reportSessionRepository;
-            _imageServices = imageServices;
         }
         public List<Report> GetAll()
         {
@@ -94,13 +86,6 @@ namespace kvaksy_backend.Services
         public async Task<Report> UpdateReport(Report report)
         {
             var result = await _reportSessionRepository.UpdateReport(report);
-
-            return result;
-        }
-
-        public async Task<Report> AddImageToReport(Guid id, IFormFile file)
-        {
-            var result = await _imageServices.AddImageToReport(id, file);
 
             return result;
         }

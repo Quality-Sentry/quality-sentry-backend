@@ -1,6 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using kvaksy_backend.data.DbContexts;
+using kvaksy_backend.data.models;
 using kvaksy_backend.Data.Models;
 using Microsoft.VisualBasic;
 using System.ComponentModel;
@@ -9,7 +10,7 @@ namespace kvaksy_backend.Repositories
 {
     public interface IImageRepository
     {
-        Task<string> UpsertAsync(Report report, IFormFile image);
+        Task<DbChanges<ImageField>> UpsertAsync(Guid id, IFormFile image);
         Task GetOneAsync(Guid id);
         Task<List<object>> GetAllAsync();
         Task DeletAsync(Guid id);
@@ -53,20 +54,50 @@ namespace kvaksy_backend.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<string> UpsertAsync(Report report, IFormFile image)
+        public async Task<DbChanges<ImageField>> UpsertAsync(Guid id, IFormFile image)
         {
-            using (var stream = image.OpenReadStream())
+            try
             {
-                var blob = _container.GetBlobClient(report.Id.ToString());
+                using var stream = image.OpenReadStream();
 
+                // Create a BlobClient object which will be used to create and manipulate the blob
+                var blob = _container.GetBlobClient(id.ToString());
+
+                // Upload content to the blob
                 await blob.UploadAsync(stream);
-                
+
+                // Check if the blob exists
                 if (!blob.Exists())
                 {
                     throw new Exception("Failed to upload image");
                 }
 
-                return blob.Uri.ToString();
+                var blobUrl = blob.Uri.ToString();
+
+                // Get the current image field
+                var imageField = await _reportDbContext.ImageFields.FindAsync(id);
+
+                if (imageField == null)
+                {
+                    throw new Exception("Image field not found");
+                }
+
+                // Add the new url to the image field
+                imageField.Urls.Add(new ImageFieldUrl(blobUrl));
+
+                // Update the image field
+                _reportDbContext.ImageFields.Update(imageField);
+                var changes = await _reportDbContext.SaveChangesAsync();
+
+                return new DbChanges<ImageField>
+                {
+                    Model = imageField,
+                    Changes = changes
+                };
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
     }

@@ -6,7 +6,7 @@ namespace kvaksy_backend.Services
 {
     public interface IImageServices
     {
-        Task<Report> AddImageToReport(Guid id, IFormFile image);
+        Task<DbChanges<Report>> AddImageToReport(Guid id, IFormFile image);
     }
     public class ImageServices: IImageServices
     {
@@ -18,13 +18,11 @@ namespace kvaksy_backend.Services
             _reportServices = reportSessionServices;
         }
 
-        public async Task<Report> AddImageToReport(Guid id, IFormFile image)
+        public async Task<DbChanges<Report>> AddImageToReport(Guid id, IFormFile image)
         {
             try
             {
                 var report = _reportServices.GetReport(id);
-
-                var blobUrl = await _imageRepository.UpsertAsync(report, image);
 
                 foreach (var field in report.Fields)
                 {
@@ -35,11 +33,17 @@ namespace kvaksy_backend.Services
                             throw new Exception("Report already have too many images attatched");
                         }
 
-                        imageField.Urls.Add(new ImageFieldUrl(blobUrl));
+                        var updatedField = await _imageRepository.UpsertAsync(imageField.Id, image);
+
+                        imageField = updatedField.Model;
 
                         var result = await _reportServices.UpdateReport(report);
 
-                        return result;
+                        return new DbChanges<Report>()
+                        {
+                            Model = result,
+                            Changes = updatedField.Changes
+                        };
                     }
                     throw new Exception("Did not find an image field on the given report");
                 }

@@ -60,23 +60,6 @@ namespace kvaksy_backend.Controllers
                 return BadRequest(e.Message);
             }
         }
-        [Route("image")]
-        [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        public async Task<ActionResult> AddImageToReport(IFormFile file, Guid id)
-        {
-            Globals.CheckForUserLevelPermission();
-
-            try
-            {
-                return Ok(await _reportSessionService.AddImageToReport(id, file));
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
 
         [Route("unfinished")]
         [HttpGet]
