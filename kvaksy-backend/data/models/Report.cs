@@ -28,8 +28,8 @@ namespace kvaksy_backend.Data.Models
             var settings = new JsonSerializerSettings
             {
                 Converters = new JsonConverter[] { new StringEnumConverter() },
-                Formatting = Formatting.None,
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
+                
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),                
             };
 
             // Create an anonymous object to merge properties from the Report class
@@ -41,7 +41,7 @@ namespace kvaksy_backend.Data.Models
                 Fields
             };
 
-            return JsonConvert.SerializeObject(reportObject, settings);
+            return JsonConvert.SerializeObject(reportObject, settings).ToString();
         }
 
         public Report FromConfigurations(ReportFieldsConfiguration configurations)
