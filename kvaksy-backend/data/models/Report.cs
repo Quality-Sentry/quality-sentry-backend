@@ -28,7 +28,7 @@ namespace kvaksy_backend.Data.Models
             var settings = new JsonSerializerSettings
             {
                 Converters = new JsonConverter[] { new StringEnumConverter() },
-                Formatting = Formatting.Indented,
+                Formatting = Formatting.None,
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
 
