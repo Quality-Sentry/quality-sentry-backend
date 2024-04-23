@@ -1,6 +1,8 @@
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
+using Swashbuckle.AspNetCore.Annotations;
+
 namespace kvaksy_backend.Data.Models
 {
     public enum Role
@@ -12,9 +14,9 @@ namespace kvaksy_backend.Data.Models
     }
     public class User
     {
-        public Role Role { get; set; } = Role.User;
-
+        [JsonIgnore]
         public Guid Id { get; set; } = Guid.NewGuid();
+        public Role Role { get; set; } = Role.User;
         public string? Email { get; set; }
         public string? Username { get; set; }
         public string? FirstName { get; set; }

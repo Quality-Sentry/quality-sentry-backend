@@ -1,4 +1,4 @@
-﻿using kvaksy_backend.Data;
+﻿using kvaksy_backend.data.DbContexts;
 using kvaksy_backend.Data.Models;
 using kvaksy_backend.helpers;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +14,8 @@ namespace kvaksy_backend.Repositories
     }
     public class UserRepository : IUserRepository
     {
-        private readonly ApplicationDbContext _dbContext;
-        public UserRepository(ApplicationDbContext dbContext)
+        private readonly UserDbContext _dbContext;
+        public UserRepository(UserDbContext dbContext)
         {
             _dbContext = dbContext;
         }

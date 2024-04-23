@@ -1,3 +1,4 @@
+using kvaksy_backend.data.models;
 using kvaksy_backend.Data.Models;
 using kvaksy_backend.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -17,15 +18,17 @@ namespace kvaksy_backend.Controllers
 
         [Route("login")]
         [HttpPost]
-        public async Task<ActionResult<LoginResponse>> Login([FromBody] User user)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult<LoginResponse>> LoginUser([FromBody] LoginCredentials credentials)
         {
-            if (user == null || user.Email == null || user.Password == null)
+            if (credentials == null || credentials.Email == null || credentials.Password == null)
             {
                 return BadRequest("Email and password are required.");
             }
             try
             {
-                var loggedInUser = await _userService.Login(user.Email, user.Password);
+                var loggedInUser = await _userService.Login(credentials.Email, credentials.Password);
                 
                 return Ok(loggedInUser);
             }
@@ -34,9 +37,12 @@ namespace kvaksy_backend.Controllers
                 return BadRequest(e.Message);
             }
         }
-        [Route("register")]
+
+        [Route("")]
         [HttpPost]
-        public async Task<ActionResult<LoginResponse>> Register([FromBody] User user)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult<LoginResponse>> CreateUser([FromBody] User user)
         {
             Globals.CheckForAdminLevelPermission();
 

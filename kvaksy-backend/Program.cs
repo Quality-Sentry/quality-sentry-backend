@@ -1,4 +1,4 @@
-using kvaksy_backend.Data;
+using kvaksy_backend.data.DbContexts;
 using kvaksy_backend.Data.Models;
 using kvaksy_backend.Helpers;
 using kvaksy_backend.Repositories;
@@ -15,22 +15,32 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
-    c =>
+    options =>
     {
-        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        options.EnableAnnotations();
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Version = "v1",
+            Title = "Quality Sentry API",
+            TermsOfService = new Uri("https://example.com/terms"),
+            License = new OpenApiLicense
+            {
+                Name = "License",
+                Url = new Uri("https://example.com/license")
+            }
+        });
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             In = ParameterLocation.Header,
             Description = "Please insert JWT with Bearer into field",
             Name = "Authorization",
             Type = SecuritySchemeType.ApiKey
         });
-        c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement {
    {
      new OpenApiSecurityScheme
      {
@@ -47,14 +57,20 @@ builder.Services.AddSwaggerGen(
     }
 );
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
+// Add the database contexts
 
-//builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-//    .AddEntityFrameworkStores<ApplicationDbContext>();
+// Get the connection string from the appsettings.json file
+var dbConnectionString = builder.Configuration.GetConnectionString("Database");
 
-// builder.Services.AddIdentity<ApplicationUser, IdentityRole>();
+builder.Services.AddDbContext<UserDbContext>(options =>
+    options.UseSqlServer(dbConnectionString));
 
+builder.Services.AddDbContext<ReportDbContext>(options => 
+    options.UseSqlServer(dbConnectionString));
+
+// Set up dependency injection for the repositories
+builder.Services.AddScoped<UserDbContext>();
+builder.Services.AddScoped<ReportDbContext>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
@@ -71,66 +87,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
-//builder.Services.Configure<IdentityOptions>(options =>
-//{
-//    // Password settings.
-//    if (builder.Environment.IsProduction())
-//    {
-//        options.Password.RequireDigit = true;
-//        options.Password.RequireLowercase = true;
-//        options.Password.RequireNonAlphanumeric = true;
-//        options.Password.RequireUppercase = true;
-//        options.Password.RequiredLength = 8;
-//        options.Password.RequiredUniqueChars = 0;
-
-//        // Lockout settings.
-//        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-//        options.Lockout.MaxFailedAccessAttempts = 5;
-//        options.Lockout.AllowedForNewUsers = true;
-
-//        // User settings.
-//        options.User.AllowedUserNameCharacters =
-//        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-//        options.User.RequireUniqueEmail = true;
-//    }
-//    else
-//    {
-//        options.Password.RequireDigit = false;
-//        options.Password.RequireLowercase = false;
-//        options.Password.RequireNonAlphanumeric = false;
-//        options.Password.RequireUppercase = false;
-//        options.Password.RequiredLength = 1;
-//        options.Password.RequiredUniqueChars = 0;
-
-//        // Lockout settings.
-//        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(10);
-//        options.Lockout.MaxFailedAccessAttempts = 20;
-//        options.Lockout.AllowedForNewUsers = true;
-
-//        // User settings.
-//        options.User.AllowedUserNameCharacters =
-//        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-//        options.User.RequireUniqueEmail = true;
-//    }
-//});
-
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.AddPolicy("IsUser", policy =>
-//                      policy.RequireClaim(ClaimTypes.Role, "User"));
-//    options.AddPolicy("IsAdmin", policy =>
-//                      policy.RequireClaim(ClaimTypes.Role, "Admin"));
-//});
-
-builder.Services.AddScoped<IReportSessionRepository, ReportSessionRepository>();
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITemperatureRepository, TemperatureRepository>();
+builder.Services.AddScoped<IWeightRepository, WeightRepository>();
 
 builder.Services.AddScoped<IReportSessionService, ReportSessionService>();
 builder.Services.AddScoped<IUserServices, UserServices>();
-builder.Services.AddScoped<ApplicationDbContext>();
-
-//builder.Services.AddScoped<UserManager<User>>();
-//builder.Services.AddScoped<SignInManager<User>>();
+builder.Services.AddScoped<ITemperatureServices, TemperatureServices>();
+builder.Services.AddScoped<IWeightServices, WeightServices>();
 
 var app = builder.Build();
 
