@@ -23,7 +23,7 @@ namespace kvaksy_backend.Data.Models
             Fields = new List<ReportFieldBase>();
         }
 
-        public string ToJson()
+        public object ToJson()
         {
             var settings = new JsonSerializerSettings
             {
@@ -41,7 +41,7 @@ namespace kvaksy_backend.Data.Models
                 Fields
             };
 
-            return JsonConvert.SerializeObject(reportObject, settings).ToString();
+            return reportObject;
         }
 
         public Report FromConfigurations(ReportFieldsConfiguration configurations)

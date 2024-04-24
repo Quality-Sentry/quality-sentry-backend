@@ -53,7 +53,10 @@ namespace kvaksy_backend.Controllers
             {
                 var createdReportSession = _reportSessionService.CreateReport();
 
-                return Ok(createdReportSession.ToJson());
+                // Create new empty response
+                var response = new JsonResult(createdReportSession.ToJson());
+
+                return response;
             }
             catch (Exception e)
             {

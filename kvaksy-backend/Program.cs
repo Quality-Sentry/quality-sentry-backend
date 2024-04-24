@@ -1,21 +1,32 @@
+using JsonSubTypes;
 using kvaksy_backend.data.DbContexts;
-using kvaksy_backend.Data.Models;
+using kvaksy_backend.data.models;
 using kvaksy_backend.Helpers;
 using kvaksy_backend.Repositories;
 using kvaksy_backend.Services;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+    //Register the subtypes of the Device (Phone and Laptop)
+    //and define the device Discriminator
+    //options.SerializerSettings.Converters.Add(
+    //    JsonSubtypesConverterBuilder
+    //    .Of(typeof(ReportFieldBase), "Type")
+    //    .RegisterSubtype(typeof(ImageField), ReportFieldType.Image)
+    //    .RegisterSubtype(typeof(TemperatureField), ReportFieldType.Temperature)
+    //    .RegisterSubtype(typeof(WeightField), ReportFieldType.Weight)
+    //    .SerializeDiscriminatorProperty()
+    //    .Build()
+    //);
+
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
