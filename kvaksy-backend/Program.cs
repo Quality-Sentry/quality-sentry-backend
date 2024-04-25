@@ -60,7 +60,10 @@ builder.Services.AddCors(options =>
 
     options.AddPolicy(name: MyAllowSpecificOrigins, policy =>
         {
-            policy.WithOrigins("https://quality-sentry--*");
+            //policy.WithOrigins("https://quality-sentry--*");
+            policy.AllowAnyHeader();
+            policy.AllowAnyMethod();
+            policy.AllowAnyOrigin();
         });
 });
 
