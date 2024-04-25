@@ -12,21 +12,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers().AddNewtonsoftJson(options =>
-{
-    //Register the subtypes of the Device (Phone and Laptop)
-    //and define the device Discriminator
-    //options.SerializerSettings.Converters.Add(
-    //    JsonSubtypesConverterBuilder
-    //    .Of(typeof(ReportFieldBase), "Type")
-    //    .RegisterSubtype(typeof(ImageField), ReportFieldType.Image)
-    //    .RegisterSubtype(typeof(TemperatureField), ReportFieldType.Temperature)
-    //    .RegisterSubtype(typeof(WeightField), ReportFieldType.Weight)
-    //    .SerializeDiscriminatorProperty()
-    //    .Build()
-    //);
-
-});
+builder.Services.AddControllers().AddNewtonsoftJson();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
@@ -67,6 +53,17 @@ builder.Services.AddSwaggerGen(
 
     }
 );
+
+builder.Services.AddCors(options =>
+{
+    var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+    options.AddPolicy(name: MyAllowSpecificOrigins, policy =>
+        {
+            policy.WithOrigins("https://quality-sentry--*");
+        });
+});
+
 
 // Add the database contexts
 
