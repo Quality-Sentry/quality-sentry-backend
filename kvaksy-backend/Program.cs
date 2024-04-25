@@ -54,9 +54,10 @@ builder.Services.AddSwaggerGen(
     }
 );
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 builder.Services.AddCors(options =>
 {
-    var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
     options.AddPolicy(name: MyAllowSpecificOrigins, policy =>
         {
@@ -114,6 +115,8 @@ app.UseMiddleware<JwtMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
 
